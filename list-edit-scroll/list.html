@@ -1,0 +1,249 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>list</title>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script type="text/javascript" src="lib/vue.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    #app {
+      display: flex;
+      flex-direction: column;
+    }
+    .listHead, .rowStyle {
+      display: flex;
+      align-items: center;
+      /*justify-content: space-around;*/
+      border-bottom: 1px solid #ddd;
+    }
+    .listHead {
+      height: 40px;
+      /*z-index: 100;*/
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .listBody {
+      flex: 1 1 auto;
+      overflow: auto;
+      margin-bottom: 60px;
+    }
+    .rowStyle {
+      height: 30px;
+    }
+    .listHead, .rowStyle {
+      font-size: 14px;
+    }
+    .headCol, .rowCol {
+      text-align: center;
+    }
+    .colImageWrapper,.checkStyle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .colImage {
+      flex-shrink: 0;
+      height: 18px;
+      width: 18px;
+      margin-right: 8px;
+    }
+    .footer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background-color: red;
+      color: #fff;
+      line-height: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="listHead">
+      <div class="headCol" :class="{checkStyle:colIndex==0}" :style="getColStyle" v-for="(col, colIndex) in cols">
+      <div v-if="colIndex==0" class="colImageWrapper">
+        <img 
+          class="colImage"
+          :src="getAllCheckStatus()"
+          @click="checkAll()"
+        />
+      </div>
+      {{col.title}}</div>
+    </div>
+    <div class="listBody">
+      <div class="rowStyle" v-for="(row,index) in rows">
+        <div class="rowCol" :style="getColStyle" v-for="(col,colIndex) in cols">
+          <div v-if="colIndex == 0" class="colImageWrapper">
+            <img 
+              class="colImage"
+              :src="getCheckImagePath(index)"
+              @click="checkClick(index)"
+            />
+          </div>
+          <div>{{row[col.field]}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer" @click="del">删除</div>
+  </div>
+  <script>
+    $("#app").height(window.innerHeight);
+    // $(".listBody").height(window.innerHeight - $(".listHead").height());
+    new Vue({
+      el: "#app",
+      data: {
+        // rows: [
+        //   {
+        //     gpmc: "浦发银行",
+        //     gpdm: "600000",
+        //     sc: "沪",
+        //     price: 10,
+        //     cc: 1
+        //   },
+        //   {
+        //     gpmc: "平安银行",
+        //     gpdm: "000001",
+        //     sc: "深",
+        //     price: 10,
+        //     cc: 2
+        //   },
+        //   {
+        //     gpmc: "浦发银行",
+        //     gpdm: "600000",
+        //     sc: "沪",
+        //     price: 10,
+        //     cc: 3
+        //   },
+        //   {
+        //     gpmc: "平安银行",
+        //     gpdm: "000001",
+        //     sc: "深",
+        //     price: 10,
+        //     cc: 4
+        //   }
+        // ],
+        cols: [
+          {
+            // title: "全选"
+          },
+          {
+            title: "证券名称",
+            field: "gpmc",
+            align: "left"
+          },
+          {
+            title: "证券代码",
+            field: "gpdm"
+          },
+          {
+            title: "市场",
+            field: "sc"
+          },
+          {
+            title: "现价",
+            field: "price"
+          },
+          {
+            title: "持仓",
+            field: "cc"
+          }
+        ],
+        ackList: false,
+        ckList:[]
+      },
+      methods: {
+        setColStyle: function() {
+          var align = this.cols[0].align;
+          return Object.assign({}, this.getColStyle, {textAlign: align});
+        },
+        del: function() {
+          var ckSelList = [];
+          var indexList = [];
+          this.ckList.map( (ck, index) => {
+            if(ck) {
+              // ckSelList.push(this.rows[index]);
+              indexList.push(index);
+            }
+          });
+          indexList = indexList.reverse();
+          indexList.map( (ind) => {
+            this.rows.splice(ind,1);
+          });
+          this.ckList = [];
+        },
+        getCheckImagePath: function(index) {
+
+          if(this.ckList[index]) {
+            return "res/checked.png";
+          }
+          else {
+            this.ckList[index] = false;
+            return "res/unchecked.png";
+          } 
+        },
+        checkClick: function(index) {
+          this.ckList[index] = !this.ckList[index];
+          this.$forceUpdate();
+        },
+        getAllCheckStatus: function() {
+          let count = 0;
+          this.ckList.map( ck => {
+            if(ck) {
+              count++;
+            }
+          });
+          if(count == this.rows.length) {
+            this.ackList = true;
+            return "res/checked.png";
+          } else {
+            this.ackList = false;
+            return "res/unchecked.png";
+          }
+        },
+        checkAll: function() {
+          if(this.ackList) {
+            this.ckList = [];
+          } else {
+            this.rows.map( (row, index) => {
+              this.ckList[index] = true;
+            });
+            this.$forceUpdate();
+          }
+        }
+      },
+      computed: {
+        getColStyle: function() {
+          var width = (100 / this.cols.length).toFixed(2);
+          return {
+            width: width + "%",
+          }
+        },
+        rows: function() {
+          var arr = [];
+          for(var i=0; i<40; i++) {
+            arr.push({
+              gpmc: "浦发银行",
+              gpdm: "600000",
+              sc: "沪",
+              price: 10,
+              cc: 1000
+            });
+          }
+          return arr;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
