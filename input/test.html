@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head lang="en">
+  <title>test</title>
+  <meta charset="utf-8"/>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("button").click(function(){
+        var val = $("input").val();
+        val++;
+        $("input").val(val);
+      });
+      $("input").bind("input", (function(e){
+        $(".text").text($("input").val());
+        console.log($("input").val());
+      }));
+    });
+  </script>
+  <style>
+    button {
+      width: 40px;
+      height: 20px;
+      background-color: red;
+    }
+    .text {
+      margin-top: 10px;
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <input type="text">
+    <button>+1</button>
+    <div class="text"></div>
+  </div>
+</body>
+</html>
