@@ -140,7 +140,22 @@ export default {
         width: width + 'px'
       }
     },
+
+    // 上一页
     onrefresh: function() {
+
+      var pos = this.xh - this.rows.length - this.num;
+      var pageSize = 0;
+      if(pos < 0) {
+        pos = 0;
+        pageSize = this.xh - this.rows.length;
+      }
+      else {
+        pageSize = 100;
+      }
+
+      this.queryData(pos, pageSize, 0)
+
       this.refreshing = true;
       if(!this.isAutoRefresh) {
         this.isPush = false;
@@ -158,18 +173,22 @@ export default {
         }, 100);
       }
     },
+
+    // 下一页
     onloading: function() {
+
+      var pos = this.xh
+      var pageSize = this.num
+
+      this.queryData(pos, pageSize, 0, 2)
+
+
       this.loading = true;
       if(!this.isAutoRefresh) {
         this.isPush = true;
         this.bReverse = 0;
 
-        // let difNum = this.lastSeq - 100 - 50;
-        // if(difNum >= 0) {
-        //   this.num = 50;
-        // } else {
-        //   this.num = maxSeq - this.lastSeq;
-        // }
+        
         this.num = 50;
         this.xh = this.lastSeq;
         
@@ -203,46 +222,65 @@ export default {
       }
       console.log("--isAutoRefresh--", this.isAutoRefresh);
     },
+
+    // 定时刷新函数
     querySeqNum: function() {
       this.isPush = false;
       //自动刷新每次拉取最新100条数据
-      this.queryData();
+
+
+      this.xh = 0;
+      this.bReverse = 1;
+      this.queryData(0, 100, 1, 0);
 
       //判断是否在开市时间内
-      let flag = this.isOpenTime();
+      // let flag = this.isOpenTime();
       
-      if(this.isAutoRefresh) {
-        if(flag) {
-          clearTimeout(this.timer);
-          this.timer = setTimeout(()=>{
-            if(this.timer) {
-              this.querySeqNum();
-            }
-          },3000);
-        } else {
-          this.clickFlag = false;
-          this.isAutoRefresh = false;
-          this.cols[0]["title"] = this.isAutoRefresh ? "暂停" : "刷新";
-        }
-      }
+      // if(this.isAutoRefresh) {
+      //   if(flag) {
+      //     clearTimeout(this.timer);
+      //     this.timer = setTimeout(()=>{
+      //       if(this.timer) {
+      //         this.querySeqNum();
+      //       }
+      //     },3000);
+      //   } else {
+      //     this.clickFlag = false;
+      //     this.isAutoRefresh = false;
+      //     this.cols[0]["title"] = this.isAutoRefresh ? "暂停" : "刷新";
+      //   }
+      // }
     },
-    queryData: function() {
-      this.param["Startxh"] = this.xh;
-      this.param["WantNum"] = this.num;
-      this.param["bReverse"] = this.bReverse;
+    queryData: function(pos, pageSize, reverse, type) {
+
+      this.param["Startxh"] = pos;
+      this.param["WantNum"] = pageSize;
+      this.param["bReverse"] = reverse;
       console.log(JSON.stringify(this.param));
       tdxCt.HQCallTql("HQServ.PBZBCJ", this.param, {}, data => {
+
+        // 定时回调
+        if(type == 0) {
+          this.xh = maxseq
+          this.rows = data.rows
+        }
+        // 上一页回调
+        else if(type == 1) {
+          this.rows = 
+        }
+
+        // 下一页回调
+        else if(type == 2) {
+          this.xh = this.xh + data.rows.length;
+
+        }
+        
+
         console.log(data);
         let res = JSON.parse(data);
-        this.lastSeq = res["MaxTic2Seq"];
-        if(this.tempMaxSeq) {
-          if(this.tempMaxSeq != this.lastSeq) {
-            this.lastSeq += this.num;
-          }
-        } else {
-          this.tempMaxSeq = this.lastSeq;
+        if(this.isAutoRefresh) {
+          this.lastSeq = res["MaxTic2Seq"];
         }
-        this.tempMaxSeq = this.lastSeq;
         let listHead = res["ListHead"];
         let listItem = res["ListItem"];
         if(!listHead || !listItem) {
