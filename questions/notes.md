@@ -166,3 +166,45 @@ Math.abs(date); // 可能做了valueOf转换
 date.getTime(); // 皆为1534927301256
 
 ```
+
+### 3.js常见方法理解
+
+(1)Array对象方法：
+
+1.push、pop
+说明：`push()用来在数组末端添加项，pop()在数组末端移除项`
+
+2.unshift、shift
+说明：`unshift()在数组前端添加项，shift()在移除数组的第一项(前端)`
+
+***`凡添加push、unshift皆返回新的数组长度，凡删除pop、shift皆返回删除的元素(最后一个、第一个元素)`
+
+3.slice、splice
+说明：
+`slice(start,end)：不改变原数组，返回一个新数组，
+splice(index, howmany, item1, item2...)：howmany，0不删除，表示添加，item1、item2...(可选)表示添加新项目，非0即从index开始删除howmany个元素`
+
+代码：
+
+```
+//删除
+var arr = ["a", "b", "c", "d", "e", "f"];
+var deleted = arr.splice(1, 2);
+console.log(arr); //a,d,e,f
+console.log(deleted); //b,c
+
+//添加
+var arr = ["a", "b", "c", "d", "e", "f"];
+var v = arr.splice(1, 0, "m", "n");
+console.log(v.length); //0
+console.log(arr); //a,m,n,b,c,d,e,f
+```
+
+(2)String对象方法：
+1.substr、substring：提取指定数目字符、提取两下标之间字符
+说明：`substr(start,length)：start可为负数，substring(start,end)：start、end皆为非负整数`
+
+
+
+
+
