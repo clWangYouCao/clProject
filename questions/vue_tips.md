@@ -1,0 +1,39 @@
+## vue 知识点
+
+### 1.基本使用点
+
+(1) 常用meta属性 —— 适配手机页面
+
+```
+	<!-- 在iPhone 手机上禁止数字转化为拨号链接 -->
+  <meta name="format-detection" content="telephone=no">
+  <!-- 删除默认的苹果工具栏和菜单栏 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!-- 在web app应用下状态条（屏幕顶部条）的颜色-->
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <!-- 在iPhone的浏览器中页面将以原始大小显示，不允许缩放 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- 如果安装了GCF（Google Chrome Frame 谷歌内嵌浏览器框架的简称），则使用GCF来渲染页面，
+  如果没安装GCF，则使用最高版本的IE内核进行渲染。这个插件可以让用户的IE浏览器外不变，
+  但用户在浏览网页时，实际上使用的是Google Chrome浏览器内核，而且支持IE6、7、8等多个版本的IE浏览器 -->
+  <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>
+```
+
+(2)v-bind
+
+```
+new Vue({
+  el: "#app",
+  template: `
+    <div>
+      <input type="text" :value="'myValue'"/>
+      <input type="text" :value="myValue"/>
+    </div>
+  `,
+  data: {
+    myValue: "Hello vue"
+  }
+});
+```
+
+说明：上述input依次显示为myValue Hello vue。`在v-bind绑定变量，要直接显示字符串而非变量，需加双重引号。`
