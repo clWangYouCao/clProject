@@ -19,7 +19,7 @@
   <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>
 ```
 
-(2)v-bind
+(2) v-bind
 
 ```
 new Vue({
@@ -37,3 +37,71 @@ new Vue({
 ```
 
 说明：上述input依次显示为myValue Hello vue。`在v-bind绑定变量，要直接显示字符串而非变量，需加双重引号。`
+
+(3) 组件使用 -- 全局/局部注册 -- 父传子
+
+组件使用：`生出子（定义组件）、声明子（components）、使用子（模板内使用）`
+父传子：`父传属性值、子接收、子使用`
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    //全局注册 无须声明  减少components
+    Vue.component('my-btn', {
+      template: `<div>Button</div>`
+    });
+    
+    // 局部注册
+    var MyHeader = {
+      template: `<div>Header</div>`
+    };
+
+    var MyBody = {
+      props: ["content"],
+      template: `<div>
+          <div>Body</div>
+          <div style="background-color: red;">{{content}}</div>
+        </div>`
+    };
+
+    var MyFooter = {
+      template: `<div>Footer</div>`
+    };
+
+    var App = {
+      data: function(){
+        return {
+          str: "Hello World"
+        }
+      },
+      components: {
+        'my-header': MyHeader,
+        'my-body': MyBody,
+        'my-footer': MyFooter
+      },
+      template: `
+        <div>
+          <my-header />
+          <my-body :content="str" />
+          <my-footer />
+          <my-btn />
+        </div>`
+    };
+    
+    new Vue({
+      el: "#app",
+      components: {
+        'app': App
+      },
+      template: `
+        <div>
+          <app />
+        </div>`
+    });
+  </script>
+</body>
+```
