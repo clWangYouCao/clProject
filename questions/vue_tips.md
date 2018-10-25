@@ -97,10 +97,54 @@ new Vue({
       components: {
         'app': App
       },
-      template: `
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+(4) 过滤器的使用 -- 全局/局部注册
+
+注意点: `区分局部注册的filters(可包含多个)，全局注册的filter(一个)`
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+    
+    // 全局注册
+    Vue.filter("reverse", function(val, arg1){
+      return val.split("").reverse().join("");
+    });
+
+    var App = {
+      data: function() {
+        return {
+          value: ""
+        }
+      },
+      template:  `
         <div>
-          <app />
-        </div>`
+          <input type="text" v-model="value"/>
+          {{value | reverse}}
+        </div>
+      `,
+      // 局部注册
+      filters: {
+        reverse: function(val, arg1) {
+          return val.split("").reverse().join("");
+        }
+      }
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`,
     });
   </script>
 </body>
