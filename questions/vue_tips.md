@@ -5,21 +5,23 @@
 (1) 常用meta属性 —— 适配手机页面
 
 ```
-	<!-- 在iPhone 手机上禁止数字转化为拨号链接 -->
-  <meta name="format-detection" content="telephone=no">
-  <!-- 删除默认的苹果工具栏和菜单栏 -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <!-- 在web app应用下状态条（屏幕顶部条）的颜色-->
-  <meta name="apple-mobile-web-app-status-bar-style" content="white">
-  <!-- 在iPhone的浏览器中页面将以原始大小显示，不允许缩放 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- 如果安装了GCF（Google Chrome Frame 谷歌内嵌浏览器框架的简称），则使用GCF来渲染页面，
-  如果没安装GCF，则使用最高版本的IE内核进行渲染。这个插件可以让用户的IE浏览器外不变，
-  但用户在浏览网页时，实际上使用的是Google Chrome浏览器内核，而且支持IE6、7、8等多个版本的IE浏览器 -->
-  <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>
+<!-- 在iPhone 手机上禁止数字转化为拨号链接 -->
+<meta name="format-detection" content="telephone=no">
+<!-- 删除默认的苹果工具栏和菜单栏 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- 在web app应用下状态条（屏幕顶部条）的颜色-->
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<!-- 在iPhone的浏览器中页面将以原始大小显示，不允许缩放 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- 如果安装了GCF（Google Chrome Frame 谷歌内嵌浏览器框架的简称），则使用GCF来渲染页面，   
+      如果没安装GCF，则使用最高版本的IE内核进行渲染。这个插件可以让用户的IE浏览器外不变，   
+      但用户在浏览网页时，实际上使用的是Google Chrome浏览器内核，而且支持IE6、7、8等多个版本的IE浏览器 -->
+<meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>
 ```
 
 (2) v-bind
+
+说明：上述input依次显示为myValue、Hello vue。`在v-bind绑定变量，要直接显示字符串而非变量，需加双重引号。`
 
 ```
 new Vue({
@@ -36,11 +38,9 @@ new Vue({
 });
 ```
 
-说明：上述input依次显示为myValue Hello vue。`在v-bind绑定变量，要直接显示字符串而非变量，需加双重引号。`
-
 (3) 组件使用 -- 全局/局部注册 -- 父传子
 
-组件使用：`生出子（定义组件）、声明子（components）、使用子（模板内使用）`
+组件使用：`生出子（定义组件）、声明子（components）、使用子（模板内使用）`   
 父传子：`父传属性值、子接收、子使用`
 
 见以下代码：
@@ -152,8 +152,8 @@ new Vue({
 
 (5) 监听 -- watch/computed
 
-watch: 监听单个。
-computed: 监听多个。
+watch: 监听单个。   
+computed: 监听多个。   
 说明：`都不能监听复杂类型，如object、array。因为监听的是对象地址，地址并没有改变，改变的是该地址属性的值。`
 
 见以下代码：
@@ -228,7 +228,7 @@ computed: 监听多个。
 
 (6) 插槽 -- slot(Vue内置组件)
 
-slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot接收。
+slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot接收。   
 说明：`slot其实就是父组件传递的DOM结构。`
 
 见以下代码：
@@ -390,6 +390,59 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 </html>
 ```
 
+(8) ref 使用
+
+* $属性：$refs 获取组件内的元素
+* $parent：获取当前组件对象的父组件
+* $children：获取子组件
+* $root：获取 new Vue的实例 vm
+* $el：组件对象的DOM元素
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    var MySub = {
+      template: `<div>我是子组件</div>`
+    };
+    
+    Vue.component('my-sub', MySub);
+
+    var App = {
+      template: `<div>
+        <my-sub ref="mySub"></my-sub>
+        <button ref="btn">按钮</button>
+      </div>`,
+      beforeCreate: function() {
+        console.log("beforeCreate", this.$refs.btn); //undefined
+      },
+      created: function() {
+        console.log("created", this.$refs.btn); //undefined
+      },
+      beforeMount: function() {
+        console.log("beforeMount", this.$refs.btn); //undefined
+      },
+      mounted: function() { //此时才能拿到
+        console.log("mounted", this.$refs.btn); // <button>按钮</button>
+        console.log("mounted", this.$refs.mySub); //组件对象
+        console.log("mounted", this.$refs.mySub.$el); //<div>我是子组件</div>
+      }
+
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
 
 ### 2.Vue生命周期 -- 钩子函数
 
