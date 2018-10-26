@@ -149,3 +149,157 @@ new Vue({
   </script>
 </body>
 ```
+
+(5) 监听 -- watch/computed
+
+watch: 监听单个。
+computed: 监听多个。
+说明：`都不能监听复杂类型，如object、array。因为监听的是对象地址，地址并没有改变，改变的是该地址属性的值。`
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+  
+    var App = {
+      data: function() {
+        return {
+          value: "111",
+          stus: {"name": "cl"},
+          n1: '',
+          n2: '',
+          rate: ''
+        }
+      },
+      template:  `
+        <div>
+          <input type="text" v-model="value"/>
+          {{value}}
+
+          <button @click="stus.name='kcb'">{{stus.name}}</button>
+          <div>
+            <input type="number" v-model="n1"/> + <input type="number" v-model="n2"/> 
+            * <input type="number" v-model="rate"/> = {{result}}
+          </div>
+        </div>
+      `,
+      watch: {
+        value: function(newVal, oldVal) {
+          console.log(newVal);
+        },
+        // 监测复杂类型，监测不成功，因为监视的是对象地址，地址并没有改变，改变的是该地址属性的值
+        // stus: function(){
+        //   // 不会执行
+        //   console.log("监测不成功");
+        // }
+
+        // 深度监视：object || array
+        stus: {
+          deep: true,
+          handler: function(newVal, oldVal) {
+            console.log("深度监测成功", newVal);
+          }
+        }
+      },
+      computed: {
+        // 包含原值不变，缓存不调函数的优化机制(复制粘贴不会触发)
+        result: function() {
+          return (Number(this.n1) + Number(this.n2)) * this.rate;
+        },
+        // stus: function() {
+        //   // 不会执行
+        //   console.log(stus);
+        // }
+      }
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`,
+    });
+  </script>
+</body>
+```
+
+(6) 插槽 -- slot(Vue内置组件)
+
+slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot接收。
+说明：`slot其实就是父组件传递的DOM结构。`
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+    // slot是留坑，外部填入html内容
+    // 不具名slot
+    var MyLi = {
+      template: `<li>
+        <slot></slot> 
+      </li>`
+    };
+    // 具名slot
+    var ClLi = {
+      template: `<li>
+        <slot name="cl"></slot> 
+        <slot name="kcb"></slot> 
+      </li>`
+    };
+    Vue.component('my-li', MyLi);
+    
+    // 九宫格
+    var App = {
+      components: {
+        "cl-li": ClLi
+      },
+      template: `<div>
+        <ul>
+          <my-li>
+            非具名slot全接收
+            <button>111</button>
+            <h3>222</h3>
+            <span>333</span>
+          </my-li>
+          <my-li>
+            <h1>222</h1>
+          </my-li>
+          <my-li>333</my-li>
+          <cl-li>
+            <div slot="cl">具名插槽--CL</div>
+          </cl-li>
+          <cl-li>
+              <div slot="kcb">具名插槽--KCB</div>
+          </cl-li>
+          <cl-li>
+            <div slot="cl">具名插槽--CL</div>
+          </cl-li>
+          <my-li>777</my-li>
+          <my-li>
+              <h1>888</h1>
+          </my-li>
+          <my-li>
+              <button>999</button>
+          </my-li>
+        </ul>
+      </div>`
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`
+    })
+  </script>
+</body>
+```
+
+
+
