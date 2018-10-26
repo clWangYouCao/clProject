@@ -301,5 +301,112 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 </body>
 ```
 
+### 2.Vue生命周期 -- 钩子函数
+
+(1)beforeCreate：组件创建之前；created：组件创建之后。
+
+(2)beforeMount：vue起作用，装载数据到DOM之前，可获取vue启动前的DOM；mounted：vue起作用，装载数据到DOM之后，可获取vue启动后的DOM。只执行一次
+
+(3)activated：激活；deactivated：停用。被keep-alive内置组件包裹，v-if=true/false 不创建也不销毁，不会触发(1)(5)，此时触发(3)
+
+(4)beforeUpdate：改变前，获取原DOM；updated：改变后，获取新DOM。更新数据才会触发
+
+(5)beforeDestroy：销毁之前；destroyed：销毁之后。对应父组件 v-if=true/false 就分别对应创建销毁当前组件，即触发(1)(5)
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    var Test = {
+      template:  `<div>
+        我是test组件 {{text}}
+        <button @click="text='hello vue'">按钮</button>
+      </div>`,
+      data: function() {
+        return {
+          text: 'hello world'
+        }
+      },
+      beforeCreate: function() {
+        //组件创建之前
+        console.log("beforeCreate", this.text); //undefined
+      },
+      created: function() {
+        //组件创建之后 -- 可以操作数据，发ajax请求
+        console.log("created", this.text); //hello world
+      },
+      beforeMount: function() {
+        //vue起作用 装载数据到DOM之前
+        console.log("beforeMount", document.body.innerHTML); //区别 数据未填充 <div id="app"></div>
+      },
+      mounted: function() {
+        //vue起作用 装载数据到DOM之后
+        console.log("mounted", document.body.innerHTML); //区别 数据已填充 <div><div>我是test组件</div></div>
+      },
+      // 基于数据改变才会触发
+      beforeUpdate: function() {
+        //改变前
+        console.log("beforeUpdate", document.body.innerHTML); //区别 打印 hello world
+        console.log("beforeUpdate", this.text); //打印还是 hello vue
+      },
+      updated: function() {
+        //改变后
+        console.log("updated", document.body.innerHTML); //区别 打印 hello vue
+        console.log("updated", this.text); //打印还是 hello vue
+      },
+      activated: function() {
+        console.log("组件被激活");
+      },
+      deactivated: function() {
+        console.log("组件被停用");
+      },
+      // 对应父组件 v-if false 就销毁当前组件
+      beforeDestroy: function() { //销毁之前 可做一些功能，比如：保存到localStorage
+        console.log("beforeDestroy");
+        console.log("beforeDestroy", this.text); //都打印 hello world
+      },
+      destroyed: function() { //销毁之后
+        console.log("destroyed");
+        console.log("destroyed", this.text); //都打印 hello world
+      }
+    };
+
+    var App = {
+      components: {
+        'test': Test
+      },
+      data: function() {
+        return {
+          isExist: true
+        }
+      },
+      // keep-alive Vue内置组件，此时子组件会存活，不会触发销毁创建，
+      // 会触发 activated deactivated 激活 停用
+      template: `<div>
+        <keep-alive>
+          <test v-if="isExist"></test>
+        </kepp-alive>
+        <button @click="isExist = !isExist">控制子组件创建销毁</button>
+      </div>`
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        'app': App
+      },
+      template: `<app />`,
+    });
+  </script>
+</body>
+```
+
+
+
+
+
 
 
