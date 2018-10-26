@@ -301,6 +301,96 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 </body>
 ```
 
+(7) 样式绑定 -- class/style
+
+可使用对象、数组语法
+
+见以下代码：
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="lib/vue.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <style type="text/css">
+  .class_h1 {
+    color: red;
+  }
+  .class_h2 {
+    color: blue;
+  }
+  .class_h3 {
+    color: green;
+  }
+  .class_h4 {
+    color: pink;
+  }
+  .border_h1 {
+    border: 3px solid purple;
+  }
+  .border_h3 {
+    border: 3px solid red;
+  }
+  .border_h4 {
+    border: 3px solid blue;
+  }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div>
+      <h1 :class="{class_h1: color=='red', border_h1: color=='red'}">hello red</h1>
+      <h2 :class="color=='blue' ? 'class_h2' : ''">hello blue</h2>
+      <h3 :class="[{class_h3: color=='green'}, color=='green' ? 'border_h3' : '']">hello green</h3>
+      <h4 :class="[{class_h4: color=='pink'}, {border_h4: color=='pink'}]">hello pink</h4>
+      <div :style="{color: hColor, fontSize: fontSize + 'px'}">hello orange</div>
+      <div :style="styleObject">hello orange</div>
+      <div :style="[baseStyle, exStyle]">hello world</div>
+      <button @click="changeColor">点击改变字体颜色</button>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        colorArr: ["red", "blue", "green", "pink"],
+        selIndex: 0,
+        hColor: "orange",
+        fontSize: 20,
+        styleObject: {
+          color: "orange",
+          fontSize: "20px"
+        },
+        baseStyle: {
+          fontSize: "30px",
+          color: "gray"
+        },
+        exStyle: {
+          border: "3px solid red"
+        }
+      },
+      computed: {
+        color: function() {
+          return this.colorArr[this.selIndex];
+        }
+      },
+      methods: {
+        changeColor: function() {
+          this.selIndex = (++this.selIndex) % 4;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+```
+
+
 ### 2.Vue生命周期 -- 钩子函数
 
 (1)beforeCreate：组件创建之前；created：组件创建之后。
