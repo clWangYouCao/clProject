@@ -7,12 +7,16 @@
 ```
 <!-- 在iPhone 手机上禁止数字转化为拨号链接 -->
 <meta name="format-detection" content="telephone=no">
+
 <!-- 删除默认的苹果工具栏和菜单栏 -->
 <meta name="apple-mobile-web-app-capable" content="yes">
+
 <!-- 在web app应用下状态条（屏幕顶部条）的颜色-->
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
+
 <!-- 在iPhone的浏览器中页面将以原始大小显示，不允许缩放 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <!-- 如果安装了GCF（Google Chrome Frame 谷歌内嵌浏览器框架的简称），则使用GCF来渲染页面，   
       如果没安装GCF，则使用最高版本的IE内核进行渲染。这个插件可以让用户的IE浏览器外不变，   
       但用户在浏览网页时，实际上使用的是Google Chrome浏览器内核，而且支持IE6、7、8等多个版本的IE浏览器 -->
@@ -390,13 +394,15 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 </html>
 ```
 
-(8) ref 使用
+(8) $refs 以及 $nextTick 使用
 
 * $属性：$refs 获取组件内的元素
 * $parent：获取当前组件对象的父组件
 * $children：获取子组件
 * $root：获取 new Vue的实例 vm
-* $el：组件对象的DOM元素
+* $el：组件对象的DOM元素    
+
+* $nextTick：`将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新`
 
 见以下代码：
 
@@ -412,7 +418,13 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
     Vue.component('my-sub', MySub);
 
     var App = {
+      data: function() {
+        return {
+          isShow: false
+        }
+      },
       template: `<div>
+        <input ref="input" type="text" v-if="isShow" />
         <my-sub ref="mySub"></my-sub>
         <button ref="btn">按钮</button>
       </div>`,
@@ -425,7 +437,21 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
       beforeMount: function() {
         console.log("beforeMount", this.$refs.btn); //undefined
       },
-      mounted: function() { //此时才能拿到
+      mounted: function() { 
+        this.isShow = true; 
+        this.isShow = false;
+        this.isShow = true; 
+        
+        // this.$refs.input.focus(); //报错 此时获取不到input 
+        // 以上重复操作都不会立即触发
+
+        //机制：最终代码执行完毕以后，vue才会根据实际的值，进行DOM的操作
+        //解决方法：$nextTick => 在vue真正渲染DOM到页面以后的操作
+
+        this.$nextTick(function() {
+          this.$refs.input.focus(); //此时获取焦点成功
+        });
+    
         console.log("mounted", this.$refs.btn); // <button>按钮</button>
         console.log("mounted", this.$refs.mySub); //组件对象
         console.log("mounted", this.$refs.mySub.$el); //<div>我是子组件</div>
@@ -443,6 +469,7 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
   </script>
 </body>
 ```
+
 
 ### 2.Vue生命周期 -- 钩子函数
 
@@ -546,6 +573,131 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
   </script>
 </body>
 ```
+
+
+### 3.Vue 路由 -- router
+
+(1)spa (single page web application) 单页面应用
+
+说明：`url的部分锚点数据(#xxx)改变，页面不会跳转`
+
+见以下代码：
+
+```
+<body>
+    <a href="#/login">点我登录</a>
+    <a href="#/register">点我注册</a>
+    <div id="app"></div>
+  <script>
+
+    // 监听 hashchange 事件 <= 锚点改变
+
+    var app = document.getElementById('app');
+    window.addEventListener('hashchange', function() {
+      switch(location.hash) {
+        case '#/login':
+          app.innerHTML = '<h1>登录界面</h1>';
+          break;
+        case '#/register':
+          app.innerHTML = '<h1>注册界面</h1>';
+          break;
+      }
+    });
+  </script>
+</body>
+```
+
+(2)router -- router-link 使用
+
+使用步骤：
+1. 引入vue-router 核心插件
+2. 安装插件
+3. 创建一个路由对象
+4. 配置路由对象
+5. 将配置好的路由对象关联到vue实例中
+6. 指定路由改变局部的位置     
+
+说明：`Vue.use(插件对象)，过程中会注册一些全局组件(router-view/router-link)以及给vm或者组件对象挂载属性。`    
+挂载方式：
+```
+Object.defineProperty(Vue.prototype, '$router', {
+  get: function() {
+    return 自己的router对象;
+  }
+})
+```
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+
+  <!-- 1.引入vue-router(核心插件)对象 -->
+  <script type="text/javascript" src="lib/vue-router.min.js"></script>
+  <script type="text/javascript"> 
+
+    // 2.安装插件
+    Vue.use(VueRouter);
+    
+    var Login = {
+      template: `<div>登录界面</div>`
+    };
+    var Register = {
+      template: `<div>注册界面</div>`
+    };
+
+    // 3.创建一个路由对象
+    var router = new VueRouter({
+      // 4.配置路由对象
+      routes: [
+        // { path: "/login", component: Login },
+        // { path: "/register", component: Register }
+
+        // 路由对象有了名称就等于有了变量名，router-link 只需说明这个变量名即可
+        { name: "login", path: "/register", component: Login },
+        { name: "register", path: "/register", component: Register }
+      ]
+    });
+    
+    // 6.指定路由改变局部的位置
+    var App = {
+      // router-link内置组件 以下这种写法，如果要改变指向，则须重复修改to里的指向
+      // template: `
+      //   <div>
+      //     <router-link to="/login">登录</router-link>
+      //     <router-link to="/login">登录</router-link>
+      //     <router-link to="/login">登录</router-link>
+      //     <router-link to="/login">登录</router-link>
+      //     <router-link to="/register">注册</router-link>
+      //     <router-view></router-view>
+      //   </div>
+      // `
+
+      // 可将路由配置加上name属性，将to绑定到name属性上，
+      // 则可通过name找路由对象，获取其path，生成自己的href
+      template: `
+        <div>
+          <router-link :to="{name: 'login'}">登录</router-link>
+          <router-link :to="{name: 'register'}">注册</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    // 5.将配置好的路由对象关联到vue实例中
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
 
 
 
