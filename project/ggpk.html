@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>个股盘口</title>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <script type="text/javascript" src="../../libs/vue.min.js"></script>
+  <script type="text/javascript" src="../../libs/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="../../tlibs/ts_client.js"></script>
+  <script type="text/javascript" src="../../tlibs/connect.js"></script>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+          box-sizing: border-box;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 360px) {
+      html {
+        
+      }
+    }
+    @media only screen and (min-width: 360px) and (max-width: 375px) {
+
+    }
+
+    @media only screen and (min-width: 375px) and (max-width: 414px) {
+
+    }
+
+    @media only screen and (min-width: 414px) and (max-width: 768px) {
+
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+      html {
+        
+      }
+    }
+    #app {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .content {
+      width: 88%;
+    }
+    .funcol {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0px;
+      margin-left: 10px;
+      border-bottom: 1px solid #f4f4f4;
+    }
+    .col {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .onecol {
+      line-height: 26px;
+    }
+    span {
+      font-size: 14px;
+    }
+    .desc {
+      color: #666;
+    }
+    .val {
+      color: #000;
+    }
+    .title {
+      color: #333;
+      margin-right: 10px;
+    }
+    .field {
+      margin-right: 5px;
+    }
+    .noBorder {
+      border-bottom: none;
+    }
+    .rightBar {
+      width: 12%;
+      position: relative;
+    }
+    .tabTitle {
+      width: 28px;
+      height: 160px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      margin-top: -80px;
+    }
+    .tabOne {
+      height: 80px;
+      margin-top: -40px;
+    }
+    .tab {
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #888; 
+      border-radius: 5px;
+    }
+    .tab_0 {
+      border-radius: 5px 5px 0 0;
+      border-bottom-color: #fd671a;
+    }
+    .tab_1 {
+      border-radius: 0 0 5px 5px;
+      border-top: none;
+    }
+    .tabOneBorder {
+      border-radius: 5px;
+    }
+    .tabSel {
+      border-color: #fd671a;
+      color: #fd671a;
+    }
+    .firstRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 20px;
+    }
+    .plate {
+      font-size: 14px;
+      color: #666;
+    }
+    .bkClass {
+      width: 20%;
+    }
+    .subClass {
+      width: 80%;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .halfCol {
+      width: 46%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .marginR {
+      margin-right: 2%;
+    }
+    .marginL {
+      margin-left: 2%;
+    }
+    .nodata {
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .tips {
+      font-size: 16px;
+    }
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"> 
+    <div class="content">
+      <div v-if="isDisp" :class="ahRows.length > 0 ? 'funcol' : ''">
+        <div v-cloak v-for="ahRow in ahRows" class="firstRow" @click="gotoStock(row)">
+          <span class="title">{{ahRow.title}}</span>
+          <span v-if="ahRow.field" :style="getFieldColor(ahRow.field)">{{ahRow.field}}</span>
+          <span v-if="ahRow.fields" v-for="field in ahRow.fields" class="field" :style="getFieldColor(field)">{{field}}</span>
+        </div>
+      </div>
+      <div v-if="selIndex==0">
+        <div v-cloak v-for="(funCol, colIndex) in pkCols" :key="colIndex" 
+              class="funcol" :class="{noBorder: colIndex == pkCols.length-1}">
+          <div v-for="oneCol in funCol" class="onecol" :style="colWidth">
+            <div v-if="pkRows.length > 0" v-for="col in oneCol" class="col">
+                <span class="desc">{{pkRows[col] ? pkRows[col]["name"] : ''}}</span>
+                <span class="val">{{pkRows[col] ? pkRows[col]["value"] : ''}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="ldRows.length == 0" class="nodata">
+          <span v-cloak class="tips">暂无相关信息！</span>
+        </div>
+        <div v-else>
+          <div v-cloak v-for="(funCol, colIndex) in ldRows" class="funcol" :class="{noBorder: colIndex == ldRows.length-1}">
+            <div v-for="(oneCol,index) in funCol" :key="index" class="onecol" :class="index == 0 ? 'bkClass' : 'subClass'">
+              <div v-for="(col, nIndex) in oneCol" :key="nIndex" @click="gotoStock(col)" :class="[index != 0 ? 'halfCol' : '', (index != 0) && (nIndex%2 == 0) ? 'marginR' : 'marginL']">
+                <span v-if="col.plate" class="plate">{{col.plate}}</span> 
+                <span v-if="col.name" class="title">{{col.name}}</span>
+                <span v-if="col.value" class="val" :style="getFieldColor(col.value)">{{col.value}}</span>    
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rightBar">
+      <div class="tabTitle" :class="{tabOne: tabTitles.length == 1}">
+        <div v-for="(tab, index) in tabTitles" :key="index" @click="tabClick(index)"
+              class="tab" :class="['tab_'+index, {tabSel: index==selIndex}, {tabOneBorder: tabTitles.length == 1}]">
+              {{tab}}
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+  <script>
+
+    var bus = new Vue({});
+
+    function setHqggPopData(data) {
+      console.log("setHqggPopData", data);
+      if(typeof data === 'string') {
+        data = JSON.parse(data);
+      }
+
+      // 发出消息，进行更新
+      bus.$emit("pkrows-updated", { rows: data });
+    }
+    
+    // AH有数据时才会被调用
+    function setAHPopData(data) {
+      console.log("setAHPopData", data);
+      var ahRows = [];
+      if(typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      var obj = {}, obj1 = {}, obj2 = {};
+      obj["name"] = data.name;
+      obj["code"] = data.code;
+      obj["setcode"] = data.setcode;
+
+      obj1["title"] = data.flag;
+      obj1["fields"] = [];
+      obj1["fields"].push(data.xj, data.zd, data.zdf);
+
+      obj2["title"] = "溢价(H/A)";
+      var yjl = data.yjl;
+      var tempData = yjl;
+      if(yjl.indexOf("%") != -1) {
+        tempData = yjl.slice(0, yjl.indexOf("%"));
+      }
+      if(Number(tempData) > 0) {
+        yjl = "+" + yjl;
+      } else if(Number(tempData) < 0) {
+        yjl = "-" + yjl;
+      }
+      
+      obj2["field"] = yjl;
+      ahRows.push(obj1, obj2);
+
+      // 发出消息，进行更新
+      bus.$emit("ahrows-updated", { row: obj, ahRows: ahRows });
+    }
+
+    new Vue({
+      el: "#app",
+      data: {
+        testData: ["a", "b", "c", "d"],
+        tabTitles: [],
+        pkCols: [],
+        row: {},
+        pkRows: [],
+        ahRows: [],
+        ldRows: [],
+        selIndex: 0,
+        code: '',
+        setcode: '',
+        ldFlag: true,
+        ahFlag: true,
+        num: 0,
+        count: 0
+      },
+      watch: {
+        code: function(val) {
+          if(val) {
+            this.calPkHeight();
+            if(this.ldFlag) {
+              this.tabTitles = ["盘口", "联动"];
+              this.queryLdData();
+            } else {
+              this.tabTitles = ["盘口"];
+            }
+          }
+        }
+      },
+      computed: {
+        colWidth: function() {
+          var len = this.pkCols[0].length;
+          var width = (1 / len * 100 - 3).toFixed(2) + "%";
+          return {
+            width: width
+          }
+        },
+        setWidth: function() {
+          var width = parseInt(1 / 3 * 100) + "%";
+          return {
+            width: width
+          }
+        },
+        isDisp: function() {
+          return this.ahFlag ? ((this.ldFlag && this.selIndex == 1) || (!this.ldFlag && this.selIndex == 0)) : false;
+        }
+      },
+      methods: {
+        getFieldColor: function(field){
+          var color = "#333";
+          if(field.indexOf("%") != -1) {
+            field = field.slice(0, field.indexOf("%"));
+          }
+          if(Number(field) > 0) {
+            color = "#F03939";
+          } else if(Number(field) < 0){
+            color = "#29A029";
+          }
+          return {
+            color: color
+          }
+        },
+        tabClick: function(index) {
+          this.selIndex = index;
+          if(index == 0) {
+            this.calPkHeight();
+          } else {
+            this.calLdHeight(this.num, this.count);
+          }
+        },
+        gotoStock: function(row) {
+          var setcode = parseInt(row.setcode);
+          var code = row.code;
+          var name = row.name;
+          var obj = {
+            "ZQSETCODE": setcode,
+            "ZQCODE": code,
+            "ZQNAME": name
+          };
+          var param = {
+            "OpenID": "HQGG",
+            "OpenParam": obj
+          };
+          console.log(JSON.stringify(param));
+          __webCallTql.send('tdxOpenNativeModule', param, function(data){});
+        },
+        queryLdData: function() {
+          var _this = this;
+          var rows = [];
+          var param = {
+            "code": _this.code,
+            "setcode": _this.setcode,
+            "blocktype": 0,
+            "blockstyle": 0,
+            "blockid": "Stock_GLHQ",
+            "buftojs": 1
+          };
+          console.log("param " + JSON.stringify(param));
+          __webCallTql.send('tdxXmlBlockInfo', {"OpenParam": param}, function(data) {
+            console.log("tdxXmlBlockInfo", data);
+            if(typeof data === "string") {
+              data = JSON.parse(data);
+            }
+
+            var buf = data.buf;
+            if(typeof buf === "string") {
+              buf = JSON.parse(buf);
+            }
+            
+            buf = buf.sort(function(a, b){
+              return parseInt(a[0]) - parseInt(b[0]);
+            });
+    
+            var bkRows = [];
+            var bkRow_1 = [], bkRow_2 = [], bkRow_3 = [], bkRow_4 = [], bkRow_5 = [];
+
+            for(var i = 0, len = buf.length; i < len; i++) {
+              var L = buf[i];
+              if(L[0] == '2') {
+                bkRow_1.push(buf[i]);
+              } else if(L[0] == '3') {
+                bkRow_2.push(buf[i]);
+              } else if(L[0] == '4') {
+                bkRow_3.push(buf[i]);
+              } else if(L[0] == '5') {
+                bkRow_4.push(buf[i]);
+              } else {
+                bkRow_5.push(buf[i]);
+              }
+            }
+            // 计算页面高度
+            _this.num = Math.round(bkRow_1.length / 2) + Math.round(bkRow_2.length / 2) + Math.round(bkRow_3.length / 2) + Math.round(bkRow_4.length / 2) + Math.round(bkRow_5.length / 2);
+            _this.count = 0;
+
+            bkRows.push(bkRow_1, bkRow_2, bkRow_3, bkRow_4, bkRow_5);
+            
+            for(var j = 0, jLen = bkRows.length; j < jLen; j++) {
+              if(bkRows[j].length > 0) {
+                var bkRow = [];
+                var bkArr = [];
+                var bkConArr = [];
+                var bkName = "";
+                _this.count++;
+
+                for(var k = 0, kLen = bkRows[j].length; k < kLen; k++) {
+                  var L = bkRows[j][k];
+            
+                  if(L[0] == '2') {
+                    bkName = "行业板块";
+                  } else if(L[0] == '3') {
+                    bkName = "地区板块";
+                  } else if(L[0] == '4') {
+                    bkName = "概念板块";
+                  } else if(L[0] == '5') {
+                    bkName = "风格板块";
+                  } else {
+                    bkName = "其他";
+                  }
+                  var setcode = L[1];
+                  var code = L[2];
+                  var name = L[3];
+                  var zdf = "--";
+                  try{
+                    zdf = ((parseFloat(L[4]) - parseFloat(L[5])) / parseFloat(L[5]) * 100).toFixed(2);
+                    if( parseFloat(L[4]) == 0.0 ) {
+                      zdf = "0.00";
+                    }
+                    if(Number(zdf) > 0) {
+                      zdf = "+" + zdf;
+                    }
+                    zdf = zdf + "%";
+                  } catch(err) {
+                    zdf = "--";
+                  }   
+                  var obj = {
+                    "setcode": setcode,
+                    "code": code,
+                    "name": name,
+                    "value":zdf
+                  };
+                  bkConArr.push(obj);
+                }
+                bkArr.push({"plate": bkName});
+                bkRow.push(bkArr, bkConArr);
+                rows.push(bkRow);
+              }
+            }
+            _this.ldRows = rows;
+            
+            if(_this.ldRows.length > 0) {
+              setTimeout(function(){
+                _this.queryLdData();
+              }, 5000);
+            }
+            console.log("ldRows", JSON.stringify(_this.ldRows));
+          });
+        },
+        calPkHeight: function() {
+          this.pkCols = [
+            [
+              [9, 11, 13],
+              [10, 12, 14]
+            ],
+            [
+              [15, 17, 19],
+              [16, 18, 20],
+            ],
+            [
+              [21, 23, 25, 27],
+              [22, 24, 26, 28]
+            ]
+          ];
+          var len = this.pkRows.length;
+          var num = 0;
+          if(len <= 21) {
+            this.pkCols.pop();
+          } 
+          if(len <= 15) {
+            this.pkCols.pop();
+          }
+
+          this.pkCols.map(function(col){
+            num += col[0].length;
+          });
+          var colLen = this.pkCols.length;
+          var height =  num * 26 + colLen * 16 + (colLen - 1);
+
+          var barHeight = 0;
+          // 没有联动 有AH 放在盘口页
+          if(!this.ldFlag) {
+            if(this.ahFlag) {
+              barHeight = 37;
+            }
+          }
+          height = height + barHeight;
+          height = this.ldFlag ? (height <= 210 ? 210 : height) : (height <= 110 ? 110 : height);
+          this.setPageHeight(height);
+        },
+        calLdHeight: function(num, count) {
+          var barHeight = 0;
+          if(this.ahFlag) {
+            barHeight = 37;
+          }
+          var height = barHeight + num * 26 + count * 16 + (count - 1);
+          height = height <= 310 ? 310 : height;
+          this.setPageHeight(height);
+        },
+        setPageHeight: function(height) {
+          $("#app").height(height);
+          $("#app").css("background", "#fff");
+          __webCallTql.send('tdxSubModuleViewMsg', { "msgType": "setWebHeight", "data": {"height": height}}, function(data){});
+        }
+      },
+      mounted: function() {
+        __webCallTql.send('tdxSubModuleViewMsg', { "msgType": "initPkData" }, function(data){});
+        __webCallTql.send('tdxSubModuleViewMsg', { "msgType": "initAHData" }, function(data){});
+      },
+
+      created: function() {
+        var _this = this;
+        bus.$on("pkrows-updated", function(data) {
+          var rows = data.rows;
+          _this.ldFlag = rows.breedtype == "ABGG" ? true : false;
+          _this.ahFlag = rows.ahbar ? true : false; //1 有 0 没有
+          _this.code = rows.code;
+          _this.setcode = rows.setcode;
+
+          var pkrows = rows.data;
+
+          if(typeof pkrows === 'string') {
+            pkrows = JSON.parse(pkrows);
+          }
+          // 按照pos 顺序排序，则可直接根据配置pos取对应name value值
+          pkrows = pkrows.sort(function(a, b){
+            return a.pos - b.pos
+          });
+
+          _this.pkRows = pkrows;
+        });
+
+        bus.$on("ahrows-updated", function(data) {
+          _this.row = data.row;
+          _this.ahRows = data.ahRows;
+        });
+      }
+      
+    });
+  </script>
+</html>

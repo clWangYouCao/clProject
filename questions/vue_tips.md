@@ -722,8 +722,8 @@ router-link传参：`通过query、params传参，params需要对应路由对象path进行接收，que
     Vue.use(VueRouter);
     
     var Login = {
-      template: `<div>
-          我是登录页面，以下是子页面内容
+      template: `
+        <div>
           <router-view></router-view>
         </div>`
     };
