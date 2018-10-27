@@ -577,7 +577,7 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 
 ### 3.Vue 路由 -- router
 
-(1)spa (single page web application) 单页面应用
+(1) spa (single page web application) 单页面应用
 
 说明：`url的部分锚点数据(#xxx)改变，页面不会跳转`
 
@@ -607,7 +607,7 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 </body>
 ```
 
-(2)router -- router-link 使用
+(2) router -- router-link 使用
 
 使用步骤：
 1. 引入vue-router 核心插件
@@ -627,6 +627,9 @@ Object.defineProperty(Vue.prototype, '$router', {
 })
 ```
 
+router-link传参：`通过query、params传参，params需要对应路由对象path进行接收，query不需要。`    
+*以下生成href后缀分别为：#/login?id=123、#/register/abc*
+
 见以下代码：
 
 ```
@@ -641,10 +644,17 @@ Object.defineProperty(Vue.prototype, '$router', {
     Vue.use(VueRouter);
     
     var Login = {
-      template: `<div>登录界面</div>`
+      template: `<div>登录界面</div>`,
+      created: function() {
+        console.log(this.$route.query); //{id: "123"}
+      }
     };
+
     var Register = {
-      template: `<div>注册界面</div>`
+      template: `<div>注册界面</div>`,
+      created: function() {
+        console.log(this.$route.params); //{name: "abc"}
+      }
     };
 
     // 3.创建一个路由对象
@@ -656,7 +666,7 @@ Object.defineProperty(Vue.prototype, '$router', {
 
         // 路由对象有了名称就等于有了变量名，router-link 只需说明这个变量名即可
         { name: "login", path: "/register", component: Login },
-        { name: "register", path: "/register", component: Register }
+        { name: "register", path: "/register/:name", component: Register }
       ]
     });
     
@@ -678,8 +688,8 @@ Object.defineProperty(Vue.prototype, '$router', {
       // 则可通过name找路由对象，获取其path，生成自己的href
       template: `
         <div>
-          <router-link :to="{name: 'login'}">登录</router-link>
-          <router-link :to="{name: 'register'}">注册</router-link>
+          <router-link :to="{name: 'login', query: {id: '123'}}">登录</router-link>
+          <router-link :to="{name: 'register', params: {name: 'abc'}}">注册</router-link>
           <router-view></router-view>
         </div>
       `
@@ -697,6 +707,68 @@ Object.defineProperty(Vue.prototype, '$router', {
   </script>
 </body>
 ```
+
+(3) 嵌套路由
+
+使用说明：`1.router-view 包含 router-view; 2.路由 children 路由`   
+
+见以下代码：   
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    Vue.use(VueRouter);
+    
+    var Login = {
+      template: `<div>
+          我是登录页面，以下是子页面内容
+          <router-view></router-view>
+        </div>`
+    };
+    
+    var Woman = {
+      template: `<div>woman入口</div>`
+    };
+
+    var Man = {
+      template: `<div>man入口</div>`
+    };
+
+    var router = new VueRouter({
+      routes: [
+        { path: 'login', component: Login,
+          children: [
+            { name: 'woman', path: 'woman', component: Woman },
+            { name: 'man', path: 'man', component: Man }
+          ]
+        }
+      ]
+    });
+
+    var App = {
+      template: `
+        <div>
+          <router-link :to="{name: 'woman'}">女士</router-link>
+          <router-link :to="{name: 'man'}">男士</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
 
 
 
