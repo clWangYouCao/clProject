@@ -769,6 +769,91 @@ router-link传参：`通过query、params传参，params需要对应路由对象path进行接收，que
 </body>
 ```
 
+(4) 路由meta、路由钩子    
+
+meta：`是对于路由规则是否需要验证权限的配置`。路由对象中和 name 同级( meta: { isChecked: true } )    
+     
+路由钩子：`权限控制的函数执行时期。`     
+
+说明：   
+1. 每次路由匹配后，渲染组件到router-view之前   
+2. router.beforeEach(function(to, from, next){ });     
+
+见以下代码：
+
+```
+<body>
+  <div id="app"></div>
+
+  <script type="text/javascript"> 
+
+    Vue.use(VueRouter);
+    
+    var isLogin = false;
+
+    var Login = {
+      template: `<div>登录界面</div>`,
+      created: function() {
+        isLogin = true;
+      }
+    };
+    var Music = {
+      template: `<div>音乐界面</div>`,
+    };
+    
+    // 可以多次追加路由规则，动态获取路由规则
+    var router = new VueRouter();
+    
+    // 使用更为灵活，可以方便调用后追加路由规则
+    router.addRoutes(
+      [
+        // 默认首页路由 => 重定向 
+        { path: '/', redirect: { name: 'login' } }, 
+        { name: "login", path: "/login", component: Login },
+        { name: "music", path: "/music", component: Music, meta: { isChecked: true } }
+      ]
+    );
+    
+    router.beforeEach(function(to, from, next){
+      if(!to.meta.isChecked) {
+        next(); //不调用next 就会卡住
+      } else {
+        if(isLogin) {
+          next();
+        } else {
+          alert("请先登录...");
+
+          //重定向 /login
+          next({ name: 'login' });
+        }
+      }
+    });
+
+    var App = {
+      template: `
+        <div>
+          <router-link :to="{name: 'login'}">登录</router-link>
+          <router-link :to="{name: 'music'}">听音乐</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+
+
+
 
 
 
