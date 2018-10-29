@@ -609,6 +609,8 @@ slot：分为非具名插槽和具名插槽。非具名插槽是有多少接收多少，具名是对应name的slot
 
 (2) router -- router-link 使用
 
+`<router-link> 默认会被渲染成一个 <a> 标签`
+
 使用步骤：
 1. 引入vue-router 核心插件
 2. 安装插件
@@ -769,7 +771,7 @@ router-link传参：`通过query、params传参，params需要对应路由对象path进行接收，que
 </body>
 ```
 
-(4) 路由meta、路由钩子    
+(4) 路由元信息、路由钩子    
 
 meta：`是对于路由规则是否需要验证权限的配置`。路由对象中和 name 同级( meta: { isChecked: true } )    
      
@@ -850,6 +852,20 @@ meta：`是对于路由规则是否需要验证权限的配置`。路由对象中和 name 同级( meta: { is
   </script>
 </body>
 ```
+
+(5) 编程导航
+
+声明式：`<router-link :to="...">、<router-link :to="..." replace>`
+
+编程式：`router.push(...)、router.replace(...)、router.go(n)`
+
+1. 跳到指定的锚点并显示页面：`this.$router.push({ name: 'xxx', query: {id: 1}, params: {name: 'abc'} });`   
+
+2. 配置规则：`{ name: 'xxx', path: '/xxx/:name' }`   
+
+3. router.replace 替换掉当前history记录
+
+4. 根据历史记录前进或后退一步：`this.$router.go(-1 | 1)`
 
 
 
