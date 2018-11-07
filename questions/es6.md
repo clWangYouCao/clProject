@@ -95,6 +95,62 @@ arr.forEach((n, index) => {
 })
 ```
 
+(6) 字符串
+
+1. 多了两个新方法 startsWith/endsWith
+2. 字符串模板 ``
+
+见以下代码：
+
+```
+let str = "http://baidu.com";
+str.startsWith("http"); // true
+str.endsWith("com"); // true
+
+
+// ${变量} 拼接可换行
+let a = 12;
+let str = `a${a}bc`;
+console.log(str); // "a12bc"
+```
+
+(7) 面向对象
+
+1. class 关键字，构造器和类分开了
+2. class 里面直接加方法
+3. 继承
+
+见以下代码：
+
+```
+class User {
+  constructor(name, pass) {
+    this.name = name;
+    this.pass = pass;
+  }
+  showUser() {
+    alert(this.name + "," + this.pass);
+  }
+}
+// 继承
+class VipUser extends User {
+  constructor(name, pass, level) {
+    super(name, pass); // 执行父级构造函数
+    this.level = level;
+  }
+  showLevel() {
+    alert(this.level);
+  }
+}
+
+var u1 = new User('cl', '123456');
+u1.showUser();
+
+var v1 = new VipUser('cl', '123456', 3);
+v1.showUser();
+v1.showLevel();
+```
+
 
 
 
