@@ -151,6 +151,59 @@ v1.showUser();
 v1.showLevel();
 ```
 
+(8) json
+
+1. JSON对象 —— `JSON.stringify / JSON.parse`
+2. 简写 —— `key 和 value 值一样 留一个 / 方法 :function 一块删`   
+
+
+json 标准写法：
+* 只能用双引号
+* 所有的名字都必须用引号包起来
+
+如：   
+
+```
+let a = 12;
+let b = 5;
+let json = {a, b, c: 55};
+console.log(json); // a:12, b:5, c:55
+
+
+let str = "{a: 1, b: 2}";
+let str1 = "{'a': 1, 'b': 2}";  
+let str2 = '{"a": 1, "b": 2}';
+
+JSON.parse(str); //不能解析
+JSON.parse(str1); //不能解析
+JSON.parse(str2); //正常解析
+```
+
+(9) Promise
+
+使用如下：
+
+```
+// 接收函数作为参数
+let promise = new Promise(function(resolve, reject){
+    if(/* 异步操作成功 */) {
+       resolve(value); // 异步操作成功，将异步操作结果作为参数传递出去
+    } else {
+        reject(error); // 异步操作失败，将异步操作报出的错误作为参数传递出去
+    }
+});
+
+// 用then 方法分别制定 resolved 和 rejected 状态的回调函数 接收入参
+// 第二个回调函数 是可选
+promise.then(function(value){
+
+}, function(error){
+
+});
+```
+
+
+
 
 
 

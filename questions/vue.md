@@ -1,6 +1,874 @@
-## vueÊ¹ÓÃ
+## vue ÖªÊ¶µã
 
-### 1.vue ²¿·ÖAPIÊ¹ÓÃËµÃ÷
+### 1.»ù±¾Ê¹ÓÃµã
+
+(1) ³£ÓÃmetaÊôĞÔ ¡ª¡ª ÊÊÅäÊÖ»úÒ³Ãæ
+
+```
+<!-- ÔÚiPhone ÊÖ»úÉÏ½ûÖ¹Êı×Ö×ª»¯Îª²¦ºÅÁ´½Ó -->
+<meta name="format-detection" content="telephone=no">
+
+<!-- É¾³ıÄ¬ÈÏµÄÆ»¹û¹¤¾ßÀ¸ºÍ²Ëµ¥À¸ -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<!-- ÔÚweb appÓ¦ÓÃÏÂ×´Ì¬Ìõ£¨ÆÁÄ»¶¥²¿Ìõ£©µÄÑÕÉ«-->
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+
+<!-- ÔÚiPhoneµÄä¯ÀÀÆ÷ÖĞÒ³Ãæ½«ÒÔÔ­Ê¼´óĞ¡ÏÔÊ¾£¬²»ÔÊĞíËõ·Å -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Èç¹û°²×°ÁËGCF£¨Google Chrome Frame ¹È¸èÄÚÇ¶ä¯ÀÀÆ÷¿ò¼ÜµÄ¼ò³Æ£©£¬ÔòÊ¹ÓÃGCFÀ´äÖÈ¾Ò³Ãæ£¬   
+      Èç¹ûÃ»°²×°GCF£¬ÔòÊ¹ÓÃ×î¸ß°æ±¾µÄIEÄÚºË½øĞĞäÖÈ¾¡£Õâ¸ö²å¼ş¿ÉÒÔÈÃÓÃ»§µÄIEä¯ÀÀÆ÷Íâ²»±ä£¬   
+      µ«ÓÃ»§ÔÚä¯ÀÀÍøÒ³Ê±£¬Êµ¼ÊÉÏÊ¹ÓÃµÄÊÇGoogle Chromeä¯ÀÀÆ÷ÄÚºË£¬¶øÇÒÖ§³ÖIE6¡¢7¡¢8µÈ¶à¸ö°æ±¾µÄIEä¯ÀÀÆ÷ -->
+<meta http-equiv=¡±X-UA-Compatible¡± content=¡±IE=edge,chrome=1¡å/>
+```
+
+(2) v-bind
+
+ËµÃ÷£ºÉÏÊöinputÒÀ´ÎÏÔÊ¾ÎªmyValue¡¢Hello vue¡£`ÔÚv-bind°ó¶¨±äÁ¿£¬ÒªÖ±½ÓÏÔÊ¾×Ö·û´®¶ø·Ç±äÁ¿£¬Ğè¼ÓË«ÖØÒıºÅ¡£`
+
+```
+new Vue({
+  el: "#app",
+  template: `
+    <div>
+      <input type="text" :value="'myValue'"/>
+      <input type="text" :value="myValue"/>
+    </div>
+  `,
+  data: {
+    myValue: "Hello vue"
+  }
+});
+```
+
+(3) ×é¼şÊ¹ÓÃ -- È«¾Ö/¾Ö²¿×¢²á -- ¸¸´«×Ó
+
+×é¼şÊ¹ÓÃ£º`Éú³ö×Ó£¨¶¨Òå×é¼ş£©¡¢ÉùÃ÷×Ó£¨components£©¡¢Ê¹ÓÃ×Ó£¨Ä£°åÄÚÊ¹ÓÃ£©`   
+¸¸´«×Ó£º`¸¸´«ÊôĞÔÖµ¡¢×Ó½ÓÊÕ¡¢×ÓÊ¹ÓÃ`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    //È«¾Ö×¢²á ÎŞĞëÉùÃ÷  ¼õÉÙcomponents
+    Vue.component('my-btn', {
+      template: `<div>Button</div>`
+    });
+    
+    // ¾Ö²¿×¢²á
+    var MyHeader = {
+      template: `<div>Header</div>`
+    };
+
+    var MyBody = {
+      props: ["content"],
+      template: `<div>
+          <div>Body</div>
+          <div style="background-color: red;">{{content}}</div>
+        </div>`
+    };
+
+    var MyFooter = {
+      template: `<div>Footer</div>`
+    };
+
+    var App = {
+      data: function(){
+        return {
+          str: "Hello World"
+        }
+      },
+      components: {
+        'my-header': MyHeader,
+        'my-body': MyBody,
+        'my-footer': MyFooter
+      },
+      template: `
+        <div>
+          <my-header />
+          <my-body :content="str" />
+          <my-footer />
+          <my-btn />
+        </div>`
+    };
+    
+    new Vue({
+      el: "#app",
+      components: {
+        'app': App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+(4) ¹ıÂËÆ÷µÄÊ¹ÓÃ -- È«¾Ö/¾Ö²¿×¢²á
+
+×¢Òâµã: `Çø·Ö¾Ö²¿×¢²áµÄfilters(¿É°üº¬¶à¸ö)£¬È«¾Ö×¢²áµÄfilter(Ò»¸ö)`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+    
+    // È«¾Ö×¢²á
+    Vue.filter("reverse", function(val, arg1){
+      return val.split("").reverse().join("");
+    });
+
+    var App = {
+      data: function() {
+        return {
+          value: ""
+        }
+      },
+      template:  `
+        <div>
+          <input type="text" v-model="value"/>
+          {{value | reverse}}
+        </div>
+      `,
+      // ¾Ö²¿×¢²á
+      filters: {
+        reverse: function(val, arg1) {
+          return val.split("").reverse().join("");
+        }
+      }
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`,
+    });
+  </script>
+</body>
+```
+
+(5) ¼àÌı -- watch/computed
+
+watch: ¼àÌıµ¥¸ö¡£   
+computed: ¼àÌı¶à¸ö¡£   
+ËµÃ÷£º`¶¼²»ÄÜ¼àÌı¸´ÔÓÀàĞÍ£¬Èçobject¡¢array¡£ÒòÎª¼àÌıµÄÊÇ¶ÔÏóµØÖ·£¬µØÖ·²¢Ã»ÓĞ¸Ä±ä£¬¸Ä±äµÄÊÇ¸ÃµØÖ·ÊôĞÔµÄÖµ¡£`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+  
+    var App = {
+      data: function() {
+        return {
+          value: "111",
+          stus: {"name": "cl"},
+          n1: '',
+          n2: '',
+          rate: ''
+        }
+      },
+      template:  `
+        <div>
+          <input type="text" v-model="value"/>
+          {{value}}
+
+          <button @click="stus.name='kcb'">{{stus.name}}</button>
+          <div>
+            <input type="number" v-model="n1"/> + <input type="number" v-model="n2"/> 
+            * <input type="number" v-model="rate"/> = {{result}}
+          </div>
+        </div>
+      `,
+      watch: {
+        value: function(newVal, oldVal) {
+          console.log(newVal);
+        },
+        // ¼à²â¸´ÔÓÀàĞÍ£¬¼à²â²»³É¹¦£¬ÒòÎª¼àÊÓµÄÊÇ¶ÔÏóµØÖ·£¬µØÖ·²¢Ã»ÓĞ¸Ä±ä£¬¸Ä±äµÄÊÇ¸ÃµØÖ·ÊôĞÔµÄÖµ
+        // stus: function(){
+        //   // ²»»áÖ´ĞĞ
+        //   console.log("¼à²â²»³É¹¦");
+        // }
+
+        // Éî¶È¼àÊÓ£ºobject || array
+        stus: {
+          deep: true,
+          handler: function(newVal, oldVal) {
+            console.log("Éî¶È¼à²â³É¹¦", newVal);
+          }
+        }
+      },
+      computed: {
+        // °üº¬Ô­Öµ²»±ä£¬»º´æ²»µ÷º¯ÊıµÄÓÅ»¯»úÖÆ(¸´ÖÆÕ³Ìù²»»á´¥·¢)
+        result: function() {
+          return (Number(this.n1) + Number(this.n2)) * this.rate;
+        },
+        // stus: function() {
+        //   // ²»»áÖ´ĞĞ
+        //   console.log(stus);
+        // }
+      }
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`,
+    });
+  </script>
+</body>
+```
+
+(6) ²å²Û -- slot(VueÄÚÖÃ×é¼ş)
+
+slot£º·ÖÎª·Ç¾ßÃû²å²ÛºÍ¾ßÃû²å²Û¡£·Ç¾ßÃû²å²ÛÊÇÓĞ¶àÉÙ½ÓÊÕ¶àÉÙ£¬¾ßÃûÊÇ¶ÔÓ¦nameµÄslot½ÓÊÕ¡£   
+ËµÃ÷£º`slotÆäÊµ¾ÍÊÇ¸¸×é¼ş´«µİµÄDOM½á¹¹¡£`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+    // slotÊÇÁô¿Ó£¬Íâ²¿ÌîÈëhtmlÄÚÈİ
+    // ²»¾ßÃûslot
+    var MyLi = {
+      template: `<li>
+        <slot></slot> 
+      </li>`
+    };
+    // ¾ßÃûslot
+    var ClLi = {
+      template: `<li>
+        <slot name="cl"></slot> 
+        <slot name="kcb"></slot> 
+      </li>`
+    };
+    Vue.component('my-li', MyLi);
+    
+    // ¾Å¹¬¸ñ
+    var App = {
+      components: {
+        "cl-li": ClLi
+      },
+      template: `<div>
+        <ul>
+          <my-li>
+            ·Ç¾ßÃûslotÈ«½ÓÊÕ
+            <button>111</button>
+            <h3>222</h3>
+            <span>333</span>
+          </my-li>
+          <my-li>
+            <h1>222</h1>
+          </my-li>
+          <my-li>333</my-li>
+          <cl-li>
+            <div slot="cl">¾ßÃû²å²Û--CL</div>
+          </cl-li>
+          <cl-li>
+              <div slot="kcb">¾ßÃû²å²Û--KCB</div>
+          </cl-li>
+          <cl-li>
+            <div slot="cl">¾ßÃû²å²Û--CL</div>
+          </cl-li>
+          <my-li>777</my-li>
+          <my-li>
+              <h1>888</h1>
+          </my-li>
+          <my-li>
+              <button>999</button>
+          </my-li>
+        </ul>
+      </div>`
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        "app": App
+      },
+      template: `<app />`
+    })
+  </script>
+</body>
+```
+
+(7) ÑùÊ½°ó¶¨ -- class/style
+
+¿ÉÊ¹ÓÃ¶ÔÏó¡¢Êı×éÓï·¨
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="lib/vue.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <style type="text/css">
+  .class_h1 {
+    color: red;
+  }
+  .class_h2 {
+    color: blue;
+  }
+  .class_h3 {
+    color: green;
+  }
+  .class_h4 {
+    color: pink;
+  }
+  .border_h1 {
+    border: 3px solid purple;
+  }
+  .border_h3 {
+    border: 3px solid red;
+  }
+  .border_h4 {
+    border: 3px solid blue;
+  }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div>
+      <h1 :class="{class_h1: color=='red', border_h1: color=='red'}">hello red</h1>
+      <h2 :class="color=='blue' ? 'class_h2' : ''">hello blue</h2>
+      <h3 :class="[{class_h3: color=='green'}, color=='green' ? 'border_h3' : '']">hello green</h3>
+      <h4 :class="[{class_h4: color=='pink'}, {border_h4: color=='pink'}]">hello pink</h4>
+      <div :style="{color: hColor, fontSize: fontSize + 'px'}">hello orange</div>
+      <div :style="styleObject">hello orange</div>
+      <div :style="[baseStyle, exStyle]">hello world</div>
+      <button @click="changeColor">µã»÷¸Ä±ä×ÖÌåÑÕÉ«</button>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        colorArr: ["red", "blue", "green", "pink"],
+        selIndex: 0,
+        hColor: "orange",
+        fontSize: 20,
+        styleObject: {
+          color: "orange",
+          fontSize: "20px"
+        },
+        baseStyle: {
+          fontSize: "30px",
+          color: "gray"
+        },
+        exStyle: {
+          border: "3px solid red"
+        }
+      },
+      computed: {
+        color: function() {
+          return this.colorArr[this.selIndex];
+        }
+      },
+      methods: {
+        changeColor: function() {
+          this.selIndex = (++this.selIndex) % 4;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+```
+
+(8) $refs ÒÔ¼° $nextTick Ê¹ÓÃ
+
+* $ÊôĞÔ£º$refs »ñÈ¡×é¼şÄÚµÄÔªËØ
+* $parent£º»ñÈ¡µ±Ç°×é¼ş¶ÔÏóµÄ¸¸×é¼ş
+* $children£º»ñÈ¡×Ó×é¼ş
+* $root£º»ñÈ¡ new VueµÄÊµÀı vm
+* $el£º×é¼ş¶ÔÏóµÄDOMÔªËØ    
+
+* $nextTick£º`½«»Øµ÷ÑÓ³Ùµ½ÏÂ´Î DOM ¸üĞÂÑ­»·Ö®ºóÖ´ĞĞ¡£ÔÚĞŞ¸ÄÊı¾İÖ®ºóÁ¢¼´Ê¹ÓÃËü£¬È»ºóµÈ´ı DOM ¸üĞÂ`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    var MySub = {
+      template: `<div>ÎÒÊÇ×Ó×é¼ş</div>`
+    };
+    
+    Vue.component('my-sub', MySub);
+
+    var App = {
+      data: function() {
+        return {
+          isShow: false
+        }
+      },
+      template: `<div>
+        <input ref="input" type="text" v-if="isShow" />
+        <my-sub ref="mySub"></my-sub>
+        <button ref="btn">°´Å¥</button>
+      </div>`,
+      beforeCreate: function() {
+        console.log("beforeCreate", this.$refs.btn); //undefined
+      },
+      created: function() {
+        console.log("created", this.$refs.btn); //undefined
+      },
+      beforeMount: function() {
+        console.log("beforeMount", this.$refs.btn); //undefined
+      },
+      mounted: function() { 
+        this.isShow = true; 
+        this.isShow = false;
+        this.isShow = true; 
+        
+        // this.$refs.input.focus(); //±¨´í ´ËÊ±»ñÈ¡²»µ½input 
+        // ÒÔÉÏÖØ¸´²Ù×÷¶¼²»»áÁ¢¼´´¥·¢
+
+        //»úÖÆ£º×îÖÕ´úÂëÖ´ĞĞÍê±ÏÒÔºó£¬vue²Å»á¸ù¾İÊµ¼ÊµÄÖµ£¬½øĞĞDOMµÄ²Ù×÷
+        //½â¾ö·½·¨£º$nextTick => ÔÚvueÕæÕıäÖÈ¾DOMµ½Ò³ÃæÒÔºóµÄ²Ù×÷
+
+        this.$nextTick(function() {
+          this.$refs.input.focus(); //´ËÊ±»ñÈ¡½¹µã³É¹¦
+        });
+    
+        console.log("mounted", this.$refs.btn); // <button>°´Å¥</button>
+        console.log("mounted", this.$refs.mySub); //×é¼ş¶ÔÏó
+        console.log("mounted", this.$refs.mySub.$el); //<div>ÎÒÊÇ×Ó×é¼ş</div>
+      }
+
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+
+### 2.VueÉúÃüÖÜÆÚ -- ¹³×Óº¯Êı
+
+(1)beforeCreate£º×é¼ş´´½¨Ö®Ç°£»created£º×é¼ş´´½¨Ö®ºó¡£
+
+(2)beforeMount£ºvueÆğ×÷ÓÃ£¬×°ÔØÊı¾İµ½DOMÖ®Ç°£¬¿É»ñÈ¡vueÆô¶¯Ç°µÄDOM£»mounted£ºvueÆğ×÷ÓÃ£¬×°ÔØÊı¾İµ½DOMÖ®ºó£¬¿É»ñÈ¡vueÆô¶¯ºóµÄDOM¡£Ö»Ö´ĞĞÒ»´Î
+
+(3)activated£º¼¤»î£»deactivated£ºÍ£ÓÃ¡£±»keep-aliveÄÚÖÃ×é¼ş°ü¹ü£¬v-if=true/false ²»´´½¨Ò²²»Ïú»Ù£¬²»»á´¥·¢(1)(5)£¬´ËÊ±´¥·¢(3)
+
+(4)beforeUpdate£º¸Ä±äÇ°£¬»ñÈ¡Ô­DOM£»updated£º¸Ä±äºó£¬»ñÈ¡ĞÂDOM¡£¸üĞÂÊı¾İ²Å»á´¥·¢
+
+(5)beforeDestroy£ºÏú»ÙÖ®Ç°£»destroyed£ºÏú»ÙÖ®ºó¡£¶ÔÓ¦¸¸×é¼ş v-if=true/false ¾Í·Ö±ğ¶ÔÓ¦´´½¨Ïú»Ùµ±Ç°×é¼ş£¬¼´´¥·¢(1)(5)
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    var Test = {
+      template:  `<div>
+        ÎÒÊÇtest×é¼ş {{text}}
+        <button @click="text='hello vue'">°´Å¥</button>
+      </div>`,
+      data: function() {
+        return {
+          text: 'hello world'
+        }
+      },
+      beforeCreate: function() {
+        //×é¼ş´´½¨Ö®Ç°
+        console.log("beforeCreate", this.text); //undefined
+      },
+      created: function() {
+        //×é¼ş´´½¨Ö®ºó -- ¿ÉÒÔ²Ù×÷Êı¾İ£¬·¢ajaxÇëÇó
+        console.log("created", this.text); //hello world
+      },
+      beforeMount: function() {
+        //vueÆğ×÷ÓÃ ×°ÔØÊı¾İµ½DOMÖ®Ç°
+        console.log("beforeMount", document.body.innerHTML); //Çø±ğ Êı¾İÎ´Ìî³ä <div id="app"></div>
+      },
+      mounted: function() {
+        //vueÆğ×÷ÓÃ ×°ÔØÊı¾İµ½DOMÖ®ºó
+        console.log("mounted", document.body.innerHTML); //Çø±ğ Êı¾İÒÑÌî³ä <div><div>ÎÒÊÇtest×é¼ş</div></div>
+      },
+      // »ùÓÚÊı¾İ¸Ä±ä²Å»á´¥·¢
+      beforeUpdate: function() {
+        //¸Ä±äÇ°
+        console.log("beforeUpdate", document.body.innerHTML); //Çø±ğ ´òÓ¡ hello world
+        console.log("beforeUpdate", this.text); //´òÓ¡»¹ÊÇ hello vue
+      },
+      updated: function() {
+        //¸Ä±äºó
+        console.log("updated", document.body.innerHTML); //Çø±ğ ´òÓ¡ hello vue
+        console.log("updated", this.text); //´òÓ¡»¹ÊÇ hello vue
+      },
+      activated: function() {
+        console.log("×é¼ş±»¼¤»î");
+      },
+      deactivated: function() {
+        console.log("×é¼ş±»Í£ÓÃ");
+      },
+      // ¶ÔÓ¦¸¸×é¼ş v-if false ¾ÍÏú»Ùµ±Ç°×é¼ş
+      beforeDestroy: function() { //Ïú»ÙÖ®Ç° ¿É×öÒ»Ğ©¹¦ÄÜ£¬±ÈÈç£º±£´æµ½localStorage
+        console.log("beforeDestroy");
+        console.log("beforeDestroy", this.text); //¶¼´òÓ¡ hello world
+      },
+      destroyed: function() { //Ïú»ÙÖ®ºó
+        console.log("destroyed");
+        console.log("destroyed", this.text); //¶¼´òÓ¡ hello world
+      }
+    };
+
+    var App = {
+      components: {
+        'test': Test
+      },
+      data: function() {
+        return {
+          isExist: true
+        }
+      },
+      // keep-alive VueÄÚÖÃ×é¼ş£¬´ËÊ±×Ó×é¼ş»á´æ»î£¬²»»á´¥·¢Ïú»Ù´´½¨£¬
+      // »á´¥·¢ activated deactivated ¼¤»î Í£ÓÃ
+      template: `<div>
+        <keep-alive>
+          <test v-if="isExist"></test>
+        </kepp-alive>
+        <button @click="isExist = !isExist">¿ØÖÆ×Ó×é¼ş´´½¨Ïú»Ù</button>
+      </div>`
+    };
+
+    new Vue({
+      el: "#app",
+      components: {
+        'app': App
+      },
+      template: `<app />`,
+    });
+  </script>
+</body>
+```
+
+
+### 3.Vue Â·ÓÉ -- router
+
+(1) spa (single page web application) µ¥Ò³ÃæÓ¦ÓÃ
+
+ËµÃ÷£º`urlµÄ²¿·ÖÃªµãÊı¾İ(#xxx)¸Ä±ä£¬Ò³Ãæ²»»áÌø×ª`
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+    <a href="#/login">µãÎÒµÇÂ¼</a>
+    <a href="#/register">µãÎÒ×¢²á</a>
+    <div id="app"></div>
+  <script>
+
+    // ¼àÌı hashchange ÊÂ¼ş <= Ãªµã¸Ä±ä
+
+    var app = document.getElementById('app');
+    window.addEventListener('hashchange', function() {
+      switch(location.hash) {
+        case '#/login':
+          app.innerHTML = '<h1>µÇÂ¼½çÃæ</h1>';
+          break;
+        case '#/register':
+          app.innerHTML = '<h1>×¢²á½çÃæ</h1>';
+          break;
+      }
+    });
+  </script>
+</body>
+```
+
+(2) router -- router-link Ê¹ÓÃ
+
+`<router-link> Ä¬ÈÏ»á±»äÖÈ¾³ÉÒ»¸ö <a> ±êÇ©`
+
+Ê¹ÓÃ²½Öè£º
+1. ÒıÈëvue-router ºËĞÄ²å¼ş
+2. °²×°²å¼ş
+3. ´´½¨Ò»¸öÂ·ÓÉ¶ÔÏó
+4. ÅäÖÃÂ·ÓÉ¶ÔÏó
+5. ½«ÅäÖÃºÃµÄÂ·ÓÉ¶ÔÏó¹ØÁªµ½vueÊµÀıÖĞ
+6. Ö¸¶¨Â·ÓÉ¸Ä±ä¾Ö²¿µÄÎ»ÖÃ     
+
+ËµÃ÷£º`Vue.use(²å¼ş¶ÔÏó)£¬¹ı³ÌÖĞ»á×¢²áÒ»Ğ©È«¾Ö×é¼ş(router-view/router-link)ÒÔ¼°¸øvm»òÕß×é¼ş¶ÔÏó¹ÒÔØÊôĞÔ¡£`    
+¹ÒÔØ·½Ê½£º
+```
+Object.defineProperty(Vue.prototype, '$router', {
+  get: function() {
+    return ×Ô¼ºµÄrouter¶ÔÏó;
+  }
+})
+```
+
+router-link´«²Î£º`Í¨¹ıquery¡¢params´«²Î£¬paramsĞèÒª¶ÔÓ¦Â·ÓÉ¶ÔÏópath½øĞĞ½ÓÊÕ£¬query²»ĞèÒª¡£`    
+*ÒÔÏÂÉú³Éhrefºó×º·Ö±ğÎª£º#/login?id=123¡¢#/register/abc*
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+
+  <!-- 1.ÒıÈëvue-router(ºËĞÄ²å¼ş)¶ÔÏó -->
+  <script type="text/javascript" src="lib/vue-router.min.js"></script>
+  <script type="text/javascript"> 
+
+    // 2.°²×°²å¼ş
+    Vue.use(VueRouter);
+    
+    var Login = {
+      template: `<div>µÇÂ¼½çÃæ</div>`,
+      created: function() {
+        console.log(this.$route.query); //{id: "123"}
+      }
+    };
+
+    var Register = {
+      template: `<div>×¢²á½çÃæ</div>`,
+      created: function() {
+        console.log(this.$route.params); //{name: "abc"}
+      }
+    };
+
+    // 3.´´½¨Ò»¸öÂ·ÓÉ¶ÔÏó
+    var router = new VueRouter({
+      // 4.ÅäÖÃÂ·ÓÉ¶ÔÏó
+      routes: [
+        // { path: "/login", component: Login },
+        // { path: "/register", component: Register }
+
+        // Â·ÓÉ¶ÔÏóÓĞÁËÃû³Æ¾ÍµÈÓÚÓĞÁË±äÁ¿Ãû£¬router-link Ö»ĞèËµÃ÷Õâ¸ö±äÁ¿Ãû¼´¿É
+        { name: "login", path: "/register", component: Login },
+        { name: "register", path: "/register/:name", component: Register }
+      ]
+    });
+    
+    // 6.Ö¸¶¨Â·ÓÉ¸Ä±ä¾Ö²¿µÄÎ»ÖÃ
+    var App = {
+      // router-linkÄÚÖÃ×é¼ş ÒÔÏÂÕâÖÖĞ´·¨£¬Èç¹ûÒª¸Ä±äÖ¸Ïò£¬ÔòĞëÖØ¸´ĞŞ¸ÄtoÀïµÄÖ¸Ïò
+      // template: `
+      //   <div>
+      //     <router-link to="/login">µÇÂ¼</router-link>
+      //     <router-link to="/login">µÇÂ¼</router-link>
+      //     <router-link to="/login">µÇÂ¼</router-link>
+      //     <router-link to="/login">µÇÂ¼</router-link>
+      //     <router-link to="/register">×¢²á</router-link>
+      //     <router-view></router-view>
+      //   </div>
+      // `
+
+      // ¿É½«Â·ÓÉÅäÖÃ¼ÓÉÏnameÊôĞÔ£¬½«to°ó¶¨µ½nameÊôĞÔÉÏ£¬
+      // Ôò¿ÉÍ¨¹ınameÕÒÂ·ÓÉ¶ÔÏó£¬»ñÈ¡Æäpath£¬Éú³É×Ô¼ºµÄhref
+      template: `
+        <div>
+          <router-link :to="{name: 'login', query: {id: '123'}}">µÇÂ¼</router-link>
+          <router-link :to="{name: 'register', params: {name: 'abc'}}">×¢²á</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    // 5.½«ÅäÖÃºÃµÄÂ·ÓÉ¶ÔÏó¹ØÁªµ½vueÊµÀıÖĞ
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+(3) Ç¶Ì×Â·ÓÉ
+
+Ê¹ÓÃËµÃ÷£º`1.router-view °üº¬ router-view; 2.Â·ÓÉ children Â·ÓÉ`   
+
+¼ûÒÔÏÂ´úÂë£º   
+
+```
+<body>
+  <div id="app"></div>
+  <script>
+
+    Vue.use(VueRouter);
+    
+    var Login = {
+      template: `
+        <div>
+          <router-view></router-view>
+        </div>`
+    };
+    
+    var Woman = {
+      template: `<div>womanÈë¿Ú</div>`
+    };
+
+    var Man = {
+      template: `<div>manÈë¿Ú</div>`
+    };
+
+    var router = new VueRouter({
+      routes: [
+        { path: 'login', component: Login,
+          children: [
+            { name: 'woman', path: 'woman', component: Woman },
+            { name: 'man', path: 'man', component: Man }
+          ]
+        }
+      ]
+    });
+
+    var App = {
+      template: `
+        <div>
+          <router-link :to="{name: 'woman'}">Å®Ê¿</router-link>
+          <router-link :to="{name: 'man'}">ÄĞÊ¿</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+(4) Â·ÓÉÔªĞÅÏ¢¡¢Â·ÓÉ¹³×Ó    
+
+meta£º`ÊÇ¶ÔÓÚÂ·ÓÉ¹æÔòÊÇ·ñĞèÒªÑéÖ¤È¨ÏŞµÄÅäÖÃ`¡£Â·ÓÉ¶ÔÏóÖĞºÍ name Í¬¼¶( meta: { isChecked: true } )    
+     
+Â·ÓÉ¹³×Ó£º`È¨ÏŞ¿ØÖÆµÄº¯ÊıÖ´ĞĞÊ±ÆÚ¡£`     
+
+ËµÃ÷£º   
+1. Ã¿´ÎÂ·ÓÉÆ¥Åäºó£¬äÖÈ¾×é¼şµ½router-viewÖ®Ç°   
+2. router.beforeEach(function(to, from, next){ });     
+
+¼ûÒÔÏÂ´úÂë£º
+
+```
+<body>
+  <div id="app"></div>
+
+  <script type="text/javascript"> 
+
+    Vue.use(VueRouter);
+    
+    var isLogin = false;
+
+    var Login = {
+      template: `<div>µÇÂ¼½çÃæ</div>`,
+      created: function() {
+        isLogin = true;
+      }
+    };
+    var Music = {
+      template: `<div>ÒôÀÖ½çÃæ</div>`,
+    };
+    
+    // ¿ÉÒÔ¶à´Î×·¼ÓÂ·ÓÉ¹æÔò£¬¶¯Ì¬»ñÈ¡Â·ÓÉ¹æÔò
+    var router = new VueRouter();
+    
+    // Ê¹ÓÃ¸üÎªÁé»î£¬¿ÉÒÔ·½±ãµ÷ÓÃºó×·¼ÓÂ·ÓÉ¹æÔò
+    router.addRoutes(
+      [
+        // Ä¬ÈÏÊ×Ò³Â·ÓÉ => ÖØ¶¨Ïò 
+        { path: '/', redirect: { name: 'login' } }, 
+        { name: "login", path: "/login", component: Login },
+        { name: "music", path: "/music", component: Music, meta: { isChecked: true } }
+      ]
+    );
+    
+    router.beforeEach(function(to, from, next){
+      if(!to.meta.isChecked) {
+        next(); //²»µ÷ÓÃnext ¾Í»á¿¨×¡
+      } else {
+        if(isLogin) {
+          next();
+        } else {
+          alert("ÇëÏÈµÇÂ¼...");
+
+          //ÖØ¶¨Ïò /login
+          next({ name: 'login' });
+        }
+      }
+    });
+
+    var App = {
+      template: `
+        <div>
+          <router-link :to="{name: 'login'}">µÇÂ¼</router-link>
+          <router-link :to="{name: 'music'}">ÌıÒôÀÖ</router-link>
+          <router-view></router-view>
+        </div>
+      `
+    };
+
+    new Vue({
+      el: "#app",
+      router: router,
+      components: {
+        app: App
+      },
+      template: `<app />`
+    });
+  </script>
+</body>
+```
+
+(5) ±à³Ìµ¼º½
+
+ÉùÃ÷Ê½£º`<router-link :to="...">¡¢<router-link :to="..." replace>`
+
+±à³ÌÊ½£º`router.push(...)¡¢router.replace(...)¡¢router.go(n)`
+
+1. Ìøµ½Ö¸¶¨µÄÃªµã²¢ÏÔÊ¾Ò³Ãæ£º`this.$router.push({ name: 'xxx', query: {id: 1}, params: {name: 'abc'} });`   
+
+2. ÅäÖÃ¹æÔò£º`{ name: 'xxx', path: '/xxx/:name' }`   
+
+3. router.replace Ìæ»»µôµ±Ç°history¼ÇÂ¼
+
+4. ¸ù¾İÀúÊ·¼ÇÂ¼Ç°½ø»òºóÍËÒ»²½£º`this.$router.go(-1 | 1)`   
+
+
+### 4.vue -- ²¿·ÖAPIÊ¹ÓÃËµÃ÷
 
 (1)Ñ¡Ïî/DOM -- render
 
@@ -22,7 +890,7 @@
 				'h' + this.level, //tag name±êÇ©Ãû³Æ
 				this.$slots.default //×Ó×é¼şÖĞµÄÕóÁĞ
 			)
-		}, // <=>  render(h) { return h(App); }
+		}, // <=>  render(h) { return h(App); } or render: h => h(App)
 		props: {
 			level: {
 				type: Number,
@@ -61,7 +929,15 @@ createElement(±êÇ©Ãû£¬±êÇ©ÊôĞÔ£¬±êÇ©ÀïÄÚÈİ): `createElement·½·¨µÄ×÷ÓÃ¾ÍÊÇ¶¯Ì¬µÄ´
  2.Í¬Ãû¹³×Óº¯Êı(ÈçcreatedµÈ)½«»ìºÏÎªÒ»¸öÊı×é¡£»ìÈë¶ÔÏóµÄ¹³×Ó½«ÔÚ×é¼ş×ÔÉí¹³×ÓÖ®Ç°µ÷ÓÃ;
  3.ÖµÎª¶ÔÏóµÄÑ¡Ïî(Èçmethods,componentsµÈ)£¬½«±»»ìºÏÎªÍ¬Ò»¸ö¶ÔÏó¡£Á½¸ö¶ÔÏó¼üÃû³åÍ»Ê±£¬È¡×é¼ş¶ÔÏóµÄ¼üÖµ¶Ô
  ```
- 
+
+
+
+
+
+
+
+
+
 
 
 
