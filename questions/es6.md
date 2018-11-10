@@ -181,6 +181,10 @@ JSON.parse(str2); //正常解析
 
 (9) Promise
 
+1. 基本用法 —— promise、then
+2. Promise.all([p1, p2, p3]) —— 接收一个数组入参，且数组元素皆为Promise实例，且所有promise成功才算成功
+3. Promise.race([p1, p2, p3]) —— 与Promise.all类似，只是只要有一个成功就算成功
+
 使用如下：
 
 ```
@@ -200,6 +204,57 @@ promise.then(function(value){
 }, function(error){
 
 });
+
+
+Promise.all([
+  $.ajax({url: 'data/arr.txt', dataType: 'json'}), 
+  $.ajax({url: 'data/json.txt', dataType: 'json'})
+]).then(results => {
+  // 对了
+  let [arr, json] = results;
+  console.log(arr, json); //
+}, err => {
+  // 错了
+  console.log("失败了");
+});
+```
+
+(10) generator -- 生成器(可以产出多个值)
+
+1. generator函数执行中间能停 —— 遇 yield 暂停，next 才执行yield后代码
+2. yield 表达式 —— 暂停标志(既可传参、又可返回值)
+
+使用如下：
+
+```
+function* show() {
+  alert('a');
+
+  let a = yield;
+
+  alert('b');
+  alert(a); //5
+}
+
+let gen = show();
+// 第一个传参无效 赋值下一个next执行
+gen.next(12); 
+gen.next(5);
+
+
+function* show() {
+  alert('a');
+
+  yield 12;
+
+  alert('b');
+
+// return 55;
+}
+
+let gen = show();
+console.log(gen.next()); // {value: 12, done: false}
+console.log(gen.next()); // {value: undefined, done: true} 有return value 则为返回值
 ```
 
 
