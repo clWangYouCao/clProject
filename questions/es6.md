@@ -224,6 +224,8 @@ Promise.all([
 1. generator函数执行中间能停 —— 遇 yield 暂停，next 才执行yield后代码
 2. yield 表达式 —— 暂停标志(既可传参、又可返回值)
 
+`yield表达式本身没有返回值，或者说总是返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值`
+
 使用如下：
 
 ```
@@ -256,6 +258,18 @@ let gen = show();
 console.log(gen.next()); // {value: 12, done: false}
 console.log(gen.next()); // {value: undefined, done: true} 有return value 则为返回值
 ```
+
+异步操作：
+
+1. 回调
+2. Promise —— 一次读一堆，没有逻辑
+3. generator —— 逻辑性
+
+`如果带逻辑回调，1 2没什么区别，generator最方便`
+
+
+
+
 
 
 
