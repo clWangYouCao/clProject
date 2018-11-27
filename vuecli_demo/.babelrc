@@ -1,0 +1,18 @@
+// Babel 通过语法转换器支持最新版本的 JavaScript 。 这些插件允许你立刻使用新语法，无需等待浏览器支持
+{
+  // presets指明转码的规则 presets 属性告诉 Babel 要转换的源码使用了哪些新的语法特性
+  "presets": [
+    // env项是借助插件babel-preset-env，下面这个配置说的是babel对es6,es7,es8进行转码，
+    // 并且设置amd,commonjs这样的模块化文件，不进行转码
+    ["env", { // env 包含当前所有 ECMAScript 标准里的最新特性
+      "modules": false,
+      "targets": {
+        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+      }
+    }],
+    "stage-2" //该特性规范已经被起草，将会被纳入标准里；
+  ],
+  // plugins 属性告诉 Babel 要使用哪些插件，插件可以控制如何转换代码。
+  // transform-vue-jsx 表明可以在项目中使用jsx语法，会使用这个插件转换
+  "plugins": ["transform-vue-jsx", "transform-runtime"]
+}
