@@ -867,6 +867,75 @@ meta：`是对于路由规则是否需要验证权限的配置`。路由对象中和 name 同级( meta: { is
 
 4. 根据历史记录前进或后退一步：`this.$router.go(-1 | 1)`   
 
+见以下代码：
+
+```
+/* 点击传参跳转路由 */
+/* router/index.js: */
+
+import Vue from 'vue'
+import Router from 'vue-router'
+import HelloWorld from '@/components/HelloWorld'
+import test from '@/components/test'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'HelloWorld',
+      component: HelloWorld
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test
+    }
+  ]
+})
+
+/* HelloWorld.vue 点击路由跳转 */
+/* params只能用name来引入路由 query使用name和path都可以*/
+
+export default {
+	methods: {
+    jumpPage() {
+      this.$router.push({
+      	// path: '/test',  // 无用
+        name: 'test',
+        params: {
+          msg: 'hello world'
+        },
+        query: {
+          id: 1
+        }
+      });
+    }
+  }
+}
+
+
+/* test.vue 接收参数 */
+
+export default {
+  name: 'test',
+  data() {
+    return {
+      
+    }
+  },
+  computed: {
+    id() {
+      return this.$route.query.id;
+    },
+    msg() {
+      return this.$route.params.msg;
+    }
+  }
+}
+```
+
 
 ### 4.vue -- 部分API使用说明
 
