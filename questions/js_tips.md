@@ -64,7 +64,9 @@
 
 3. 闭包作用：a.可以读取自身函数外部的变量；b.让这些外部变量始终保存在内存中。
 
-(3)(4)见链接：<https://blog.csdn.net/whd526/article/details/70990994>    
+(3)(4)见链接：<https://blog.csdn.net/whd526/article/details/70990994>      
+<http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html>     
+
    
 见以下代码：   
 
