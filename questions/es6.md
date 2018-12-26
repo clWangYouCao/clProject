@@ -265,7 +265,114 @@ console.log(gen.next()); // {value: undefined, done: true} 有return value 则�
 2. Promise —— 一次读一堆，没有逻辑
 3. generator —— 逻辑性
 
-`如果带逻辑回调，1 2没什么区别，generator最方便`
+`如果带逻辑回调，1 2没什么区别，generator最方便`   
+
+
+### 2. AMD、CMD、CommonJS、ES6对比
+
+(1) AMD - 异步模块定义
+
+* 概念：`AMD是RequireJS在推广过程中对模块定义的规范化产出。`它是一个概念，RequireJS是对这个概念的实现。就好比JavaScript语言是对ECMAScript规范的实现。   
+
+* RequireJS：是一个AMD框架，可以异步加载js文件。加载模块方法如下：   
+
+```
+define(['package/lib'], function(lib){
+  function foo() {
+    lib.log('hello world');
+  }
+
+  return {
+    foo: foo
+  }
+});
+```
+
+说明：`是一个依赖前置、异步定义的AMD框架(在参数里面引入js文件)，在定义同时如果需要用到别的模块，在最前面定义好即在参数数组里面进行引入，在回调里面加载`   
+
+(2) CMD   
+
+* 概念：`CMD是SeaJS在推广过程中对模块定义的规范化产出。`是一个同步模块定义，是SeaJS的一个标准，SeaJS是CMD概念的一个实现，SeaJS是淘宝团队提供的一个模块开发的js框架。   
+
+```
+define(function(require, exports, module) {
+  // 通过 require 引入依赖
+  var $ = require('jquery');
+  var Spinning = require('./spinning');
+})
+```
+
+说明：`通过define()定义，没有依赖前置，通过require加载jQuery插件，CMD是依赖就近，在什么地方使用到插件就在什么地方require该插件，即用即返，这是一个同步的概念`   
+
+(3) CommonJS   
+
+* 概念：`CommonJS规范是通过module.exports定义的，在前端浏览器并不支持module.exports，通过node.js后端使用的。`Nodejs端是使用CommonJS规范的，前端浏览器一般使用AMD、CMD、ES6等定义模块化开发的   
+
+```
+exports.area = function(r) {
+  return Math.PI * r * r;
+};
+
+exports.Circumference = function(r) {
+  return 2 * Math.PI * r;
+};
+```
+
+说明：`输出方式有两种:(1)默认输出 -- module exports (2) 单个导出 -- exports`   
+
+(4) ES6   
+
+* 概念：`模块化 -- export default/export、import 对模块进行导出导入`   
+
+(5) AMD规范与CommonJS规范兼容性   
+
+  ```
+  CommonJS规范加载模块是同步的，也就是说，只有加载完成，才能执行后面操作。
+  
+  AMD规范则是非同步加载模块，允许指定回调函数。
+
+  由于Node.js主要用于服务器编程，模块文件一般都存在于本地硬盘，所以加载起来比较快，不用考虑非同步加载方式。所以CommonJS规范比较适用。
+
+  但是浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用AMD规范。
+
+  ```
+
+
+### 3. 2中导入导出区别与关系    
+
+1. module.exports、exports、require 是属于CommonJS模块规范   
+
+2. export default、export、import 是属于ES6语法   
+
+3. module.exports 和 exports   
+
+    ```
+    Node应用由模块组成，采用CommonJS模块规范 => 每个文件就是一个模块，有自己作用域，内部定义变量函数皆为私有，外部不可见。   
+
+    CommonJS规范规定，每个模块内部，module变量代表当前模块。这个变量是一个对象，它的exports属性（即module.exports）是对外的接口。加载某个模块，其实是加载该模块的module.exports属性 => var exports = module.exports
+    ```
+    
+    链接可见：<http://javascript.ruanyifeng.com/nodejs/module.html>   
+
+    注意：`可以直接在exports对象上添加方法，表示对外输出的接口，如同在module.exports上添加一样。注意，不能将exports变量指向一个值，会切断exports和module.exports联系`   
+
+4. export default 和 export    
+
+    ```
+    export其实和export default就是写法上面有点差别，一个是导出一个个单独接口，一个是默认导出一个整体接口。
+    
+    使用import命令的时候，用户需要知道所要加载的变量名或函数名，否则无法加载 => import时，export则对应需要加{}，如import {...} from '...'
+    
+    还有种不用去知道有哪些具体的暴露接口名，就用export default命令，为模块指定默认输出 => import时，随意命名即可import ... from '...' => 但是一个模块只有一个默认输出，所以export default只能使用一次。
+    ```  
+
+
+
+
+
+
+
+
 
 
 

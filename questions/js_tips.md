@@ -5,8 +5,8 @@
 (1) 数据类型    
 
 1. 6种数据类型：Undefined、Null、Boolean、Number、String、Object
-2. typeof 返回依次为小写，且 typeof(null) 返回为 object，null是个空对象指针   
-   
+2. typeof 返回依次为小写，且 typeof(null) => object，typeof(NaN) => number，null是个空对象指针    
+
 
 (2) 函数   
 
