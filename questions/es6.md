@@ -268,9 +268,15 @@ console.log(gen.next()); // {value: undefined, done: true} 有return value 则�
 `如果带逻辑回调，1 2没什么区别，generator最方便`   
 
 
-### 2. AMD、CMD、CommonJS、ES6对比
+### 2. AMD、CMD、CommonJS、ES6对比   
 
-(1) AMD - 异步模块定义
+*前端模块规范有三种：CommonJS、AMD、CMD，CommonJS用在服务器端，AMD和CMD用在浏览器环境*   
+
+参考链接：<https://www.jianshu.com/p/d67bc79976e6>
+
+(1) AMD - 异步模块定义   
+
+**AMD：提前执行（异步加载：依赖先执行）+延迟执行**
 
 * 概念：`AMD是RequireJS在推广过程中对模块定义的规范化产出。`它是一个概念，RequireJS是对这个概念的实现。就好比JavaScript语言是对ECMAScript规范的实现。   
 
@@ -291,6 +297,8 @@ define(['package/lib'], function(lib){
 说明：`是一个依赖前置、异步定义的AMD框架(在参数里面引入js文件)，在定义同时如果需要用到别的模块，在最前面定义好即在参数数组里面进行引入，在回调里面加载`   
 
 (2) CMD   
+
+**延迟执行（运行到需加载，根据顺序执行）**
 
 * 概念：`CMD是SeaJS在推广过程中对模块定义的规范化产出。`是一个同步模块定义，是SeaJS的一个标准，SeaJS是CMD概念的一个实现，SeaJS是淘宝团队提供的一个模块开发的js框架。   
 
