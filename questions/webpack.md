@@ -18,6 +18,8 @@
 
 (3) webpack.config.js 文件配置   
    
-`见 webpack_demo`
+`见 webpack_demo`   
+
+(4) 更多见 <http://webpack.wuhaolin.cn>
 
 
