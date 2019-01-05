@@ -111,12 +111,12 @@ function insertionSort(arr) {
     var len = arr.length;
     var preIndex, current;
     for(var i = 1; i < len; i++) {
-        preIndex = i - 1; 
-        current = arr[i]; 
+        preIndex = i - 1;  // 已排序 - 最后索引
+        current = arr[i];  // 未排序 - 第一个索引
         console.log(arr[preIndex], current);
-        while(preIndex >= 0 && arr[preIndex] > current) {
-            arr[preIndex + 1] = arr[preIndex]; 
-            preIndex--;
+        while(preIndex >= 0 && arr[preIndex] > current) { // 未排序数值current与已排序序列一一从后往前进行比较
+            arr[preIndex + 1] = arr[preIndex]; // 未排序值小于已排序比较值 -- 则将已排序值放最后
+            preIndex--; // 从后往前跟当前 current 一一比较
         }
         arr[preIndex + 1] = current;
         console.log(arr);
@@ -124,15 +124,15 @@ function insertionSort(arr) {
     return arr;
 }
 
-insertionSort([9, 2, 6, 3])
+insertionSort([9, 2, 1, 3])
 
 <!-- 打印：
 9 2
-[2, 9, 6, 3]
-9 6
-[2, 6, 9, 3]
+[2, 9, 1, 3]
+9 1
+[1, 2, 9, 3]
 9 3
-[2, 3, 6, 9]
+[1, 2, 3, 9]
 -->
 ```
 
