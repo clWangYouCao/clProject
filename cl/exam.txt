@@ -1,0 +1,584 @@
+笔试题：
+1.Doctype作用：
+	告知浏览器的解析器用什么文档标准来解析文档。
+2.HTML5为什么只需要写<!DOCTYPE HTML>:
+	html:
+	过渡型：
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+	严格型:
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+	框架型:
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+	
+	html5:
+　<!DOCTYPE html>
+
+	HTML5不基于SGML(标准通用标记语言)，不需要对DTD进行引用，但是需要doctype来规范浏览器行为；
+	HTML4.01基于SGML，所以需要进行DTD进行引用，才能告知浏览器文档所使用的文档类型
+	
+3.行内元素、块级元素、空元素：
+	a strong input span img
+	div ul ol li dl dt dd h1 p..
+	<br> <hr> <img> <meta> <input> <link>
+	
+4.link @import区别：
+	<link rel='stylesheet' href='a.css'>
+	<style>
+	@import url('a.css');
+	</style>
+	link属于XHTML标签，除了加载css，还能用于定义RSS，rel连接属性等作用；
+	@import是css提供的，只能用于css加载
+	页面被加载时，link会同时被加载；而@import引用的css会等到页面加载完成再加载
+	
+	/* 在link标签引入的 CSS 文件中使用@import时，相同样式将被该 CSS 文件本身的样式层叠。 */
+	
+5.浏览器内核的理解：
+	分为渲染引擎和js引擎
+	获取网页的内容
+	解析和执行js来实现网页的动态效果
+	
+6.常用浏览器内核：
+	Trident([ˈtraɪdn:t])：IE、360；
+	Gecko: Netscape、FF
+	Presto: Opera7以上
+	Webkit: Safari、Chrome
+	
+7.html5新特性、移除元素、如何处理HTML5新标签浏览器兼容问题、如何区分HTML和HTML5
+	主要关于图像、位置、存储、多任务等功能增加
+	绘画canvas、用于媒介回放video、audio、本地离线缓存 localStorage 长期存储数据，浏览器关闭数据不丢失、
+	sessionStorage的数据在浏览器关闭后自动删除、语意化更好的内容元素，如article、footer、header、nav
+	表单控件：calendar、date、time
+	新技术：webworker、websocketg、Geolocation
+	移除元素：big/center,对可用性产生负面影响元素：frame
+	IE6 7 8支持通过document.createElement方法产生的标签
+	区分：DOCTYPE声明、新增结构元素、功能元素
+	
+8.HTML语义化：
+	用正确标签做正确的事
+	html语义化让页面内容结构化，结构更清晰，便于浏览器、搜索引擎解析，便于SEO
+	
+9.HTML5 离线储存怎么使用，工作原理：
+	没联网时，可以正常访问站点或应用，联网时，更新用户机器上的缓存文件
+	HTML5的离线缓存是基于一个新建的.appcache文件的缓存机制，通过这个文件上的解析清单离线存储资源，
+	这些资源就会像cookie一样被存储下来。之后当用户处于离线时，浏览器就会通过被离线存储的数据进行页面展示
+	
+10.浏览器怎么对HTML5的离线资源进行管理和加载：
+	在线时，浏览器发现html头部有manifest属性，会请求manifest文件，如果第一次访问app，浏览器会根据
+	manifest文件内容下载相应的资源并进行离线存储。如果已经访问过app并且资源已经离线存储，
+	浏览器就会使用离线的资源加载页面，然后浏览器会对比新的manifest和旧的manifest，文件发生改变，
+	就会重新下载文件中资源并进行离线存储。
+	
+11.cookies、sessionStorage、localStorage区别：
+	cookie是网站为了标识用户身份而存储在用户本地终端上的数据
+	cookie始终在同源http请求中携带，即使不需要，会在浏览器和服务器间来回传递
+	sessionStorage和localStorage不会自动把数据发给服务器，仅在本地保存
+	大小：
+		cookie不超过4k，其他两个可以达到5M甚至更大
+	有效时间：
+		cookie：设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭；
+		sessionStorage：数据在当前浏览器窗口关闭后自动删除；
+		localStorage：存储持久数据，浏览器关闭数据不丢失除非主动删除数据
+		
+12.iframe缺点：
+	会阻塞主页面onload事件
+	搜索引擎的检索程序无法解读这种页面，不利于SEO
+	iframe和主页面共享连接池，而浏览器对相同域的连接有限制
+	最好通过js动态给iframe添加src属性值
+	
+13.label作用：
+	label标签来定义表单控制间关系，当用户选择该标签时，浏览器会自动将焦点转到和标签相关的表单控件上
+	<label for="Name">Number:</label>
+	<input type="text" name="Name" id="Name"/>
+	
+14.HTML5的form如何关闭自动完成功能：
+	autocomplete = off
+
+15.如何实现浏览器内多个标签页之间的通信：
+	Websocket、ShareWorker
+	localStorage cookies本地存储
+	
+16.Websocket如何兼容低浏览器：
+	Adobe Flash Socket
+	ActiveX HTMLFile(IE)、
+	基于multipart编码发送XHR、
+	基于长轮询的XHR
+	
+17.页面可见性
+18.实现圆形可点区域：
+	map+area或者svg
+	border-radius
+	纯js
+	
+19.不使用border画出1px高的线：
+	<div style="height: 1px;overflow:hidden;background:red"></div> // 其实可以无须overflow:hidden
+	
+20.	网页验证码作用：
+	区分是计算机还是人的公共全自动程序。可以防止恶意破解密码、刷票、论坛灌水；
+	有效防止黑客对某一个特定注册用户用特定程序暴力破解方式进行不断的登录尝试
+	
+js:
+1.js基本数据类型：
+	undefined、null、number、string、object、boolean
+	
+2.js内置对象：
+	Object是js中所有对象的父对象
+	数据封装类对象：Object、Array、Boolean、Number、String
+	其他对象：Function、Arguments、Math、Date
+	
+3.js基本规范：
+	不在同一行声明多个变量
+	使用=== !==比较
+	不使用全局函数
+	switch必带default
+	for循环必须使用大括号
+	if语句必须使用大括号
+	
+4.JavaScript原型，原型链 ? 有什么特点？
+	 每个对象都会在其内部初始化一个属性，就是prototype(原型)，当我们访问一个对象的属性时，
+	 如果这个对象内部不存在这个属性，那么他就会去prototype里找这个属性，这个prototype又会有自己的prototype，
+	 于是就这样一直找下去，也就是我们平时所说的原型链的概念。
+	 关系：instance.constructor.prototype = instance.__proto__
+	 特点：
+	 JavaScript对象是通过引用来传递的，我们创建的每个新对象实体中并没有一份属于自己的原型副本。当我们修改原型时，
+	 与之相关的对象也会继承这一改变
+	 
+5.JavaScript有几种类型的值？，你能画一下他们的内存图吗？
+	 栈：原始数据类型（Undefined，Null，Boolean，Number、String）
+	 堆：引用数据类型（对象、数组和函数）
+	 两种类型的区别是：存储位置不同；
+	 原始数据类型直接存储在栈(stack)中的简单数据段，占据空间小、大小固定，属于被频繁使用数据，所以放入栈中存储；
+	 引用数据类型存储在堆(heap)中的对象,占据空间大、大小不固定。如果存储在栈中，将会影响程序运行的性能；
+	 引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址
+	 
+6.如何将字符串转化为数字，例如'12.3b'?
+	parseFloat('12.3b');	
+	
+7.如何将浮点数点左边的数每三位添加一个逗号，如12000000.11转化为『12,000,000.11』?
+  function commafy(num){
+      return num && num
+          .toString()
+          .replace(/(\d)(?=(\d{3})+\.)/g, function($1, $2){
+              return $2 + ',';
+          });
+  }
+  	
+8.如何实现数组的随机排序：
+	var arr=[1,2...10];
+	arr.sort(function(){
+		return Math.random()-0.5;
+	})
+	console.log(arr);
+	
+9.Javascript如何实现继承？
+
+ 1、构造继承
+ 2、原型继承
+ 3、实例继承
+ 4、拷贝继承
+
+ 原型prototype机制或apply和call方法去实现较简单，建议使用构造函数与原型混合方式。
+	function SuperType(name) {
+		this.name = name;
+		this.colors = ["red", "blue", "green"];
+	}
+
+	SuperType.prototype.sayName = function() {
+		console.log(this.name);
+	};
+
+	function SubType(name, age) {
+		//继承属性
+		SuperType.call(this, name);
+		//实例属性
+		this.age = age;
+	}
+
+	//继承方法
+	SubType.prototype = new SuperType();
+
+	SubType.prototype.sayAge = function() {
+		console.log(this.age);
+	};
+
+	var instance1 = new SubType("cl", 24);
+	instance1.colors.push("black");
+	console.log(instance1.colors); //"red, blue, green, black"
+	instance1.sayName(); //cl
+	instance1.sayAge(); //24	
+	
+10.javascript创建对象的几种方式？
+	对象字面量 {name: 'cl', age: 24}
+	工厂模式
+	构造函数 参考以上
+	原型方式 参考以上
+	混合方式 参考以上
+	
+11.Javascript作用链域?
+	 全局函数无法查看局部函数的内部细节，但局部函数可以查看其上层的函数细节，直至全局细节。
+	 当需要从局部函数查找某一属性或方法时，如果当前作用域没有找到，就会上溯到上层作用域查找，
+	 直至全局函数，这种组织形式就是作用域链。	
+	 
+12.谈谈This对象的理解。
+	this总是指向函数的直接调用者（而非间接调用者）；
+	 如果有new关键字，this指向new出来的那个对象；
+	 在事件中，this指向触发这个事件的对象，特殊的是，IE中的attachEvent中的this总是指向全局对象Window；	
+	 
+13.eval是做什么的？
+	 它的功能是把对应的字符串解析成JS代码并运行；
+	 应该避免使用eval，不安全，非常耗性能（2次，一次解析成js语句，一次执行）。
+	 由JSON字符串转换为JSON对象的时候可以用eval，var obj =eval('('+ str +')');	
+	 
+14.什么是window对象? 什么是document对象?
+	 window对象是指浏览器打开的窗口。
+	 document对象是Documentd对象（HTML 文档对象）的一个只读引用，window对象的一个属性。	
+	 
+15.	null，undefined 的区别？
+
+	 null         表示一个对象是“没有值”的值，也就是值为“空”；
+	 undefined     表示一个变量声明了没有初始化(赋值)；
+
+	 undefined不是一个有效的JSON，而null是；
+	 undefined的类型(typeof)是undefined；
+	 null的类型(typeof)是object；
+	 
+16.写一个通用的事件侦听器函数。
+     markyun.Event = {
+         // 页面加载完成后
+         readyEvent : function(fn) {
+             if (fn==null) {
+                 fn=document;
+             }
+             var oldonload = window.onload;
+             if (typeof window.onload != 'function') {
+                 window.onload = fn;
+             } else {
+                 window.onload = function() {
+                     oldonload();
+                     fn();
+                 };
+             }
+         },
+         // 视能力分别使用dom0||dom2||IE方式 来绑定事件
+         // 参数： 操作的元素,事件名称 ,事件处理程序
+         addEvent : function(element, type, handler) {
+             if (element.addEventListener) {
+                 //事件类型、需要执行的函数、是否捕捉
+                 element.addEventListener(type, handler, false);
+             } else if (element.attachEvent) {
+                 element.attachEvent('on' + type, function() {
+                     handler.call(element);
+                 });
+             } else {
+                 element['on' + type] = handler;
+             }
+         },
+         // 移除事件
+         removeEvent : function(element, type, handler) {
+             if (element.removeEventListener) {
+                 element.removeEventListener(type, handler, false);
+             } else if (element.datachEvent) {
+                 element.detachEvent('on' + type, handler);
+             } else {
+                 element['on' + type] = null;
+             }
+         },
+         // 阻止事件 (主要是事件冒泡，因为IE不支持事件捕获)
+         stopPropagation : function(ev) {
+             if (ev.stopPropagation) {
+                 ev.stopPropagation();
+             } else {
+                 ev.cancelBubble = true;
+             }
+         },
+         // 取消事件的默认行为
+         preventDefault : function(event) {
+             if (event.preventDefault) {
+                 event.preventDefault();
+             } else {
+                 event.returnValue = false;
+             }
+         },
+         // 获取事件目标
+         getTarget : function(event) {
+             return event.target || event.srcElement;
+         },
+         // 获取event对象的引用，取到事件的所有信息，确保随时能使用event；
+         getEvent : function(e) {
+             var ev = e || window.event;
+             if (!ev) {
+                 var c = this.getEvent.caller;
+                 while (c) {
+                     ev = c.arguments[0];
+                     if (ev && Event == ev.constructor) {
+                         break;
+                     }
+                     c = c.caller;
+                 }
+             }
+             return ev;
+         }
+     };	
+	
+17.["1", "2", "3"].map(parseInt) 答案是多少？
+	[1, NaN, NaN]
+18.事件是？IE与火狐的事件机制有什么区别？ 如何阻止冒泡？
+  1. 我们在网页中的某个操作（有的操作对应多个事件）。例如：当我们点击一个按钮就会产生一个事件。
+	是可以被 JavaScript 侦测到的行为。
+  2. 事件处理机制：IE是事件冒泡、Firefox同时支持两种事件模型，也就是：捕获型事件和冒泡型事件；
+  3. ev.stopPropagation();（旧ie的方法 ev.cancelBubble = true;）
+  
+19.什么是闭包（closure），为什么要用它？
+	 闭包是指有权访问另一个函数作用域中变量的函数，创建闭包的最常见的方式就是在一个函数内创建另一个函数，
+	 通过另一个函数访问这个函数的局部变量,利用闭包可以突破作用链域，将函数内部的变量和方法传递到外部。
+
+	 闭包的特性：
+	 1.函数内再嵌套函数
+	 2.内部函数可以引用外层的参数和变量
+	 3.参数和变量不会被垃圾回收机制回收	
+	 
+20.javascript 代码中的"use strict";是什么意思 ? 使用它区别是什么？
+	 use strict是一种ECMAscript 5 添加的（严格）运行模式,这种模式使得 Javascript 在更严格的条件下运行,
+	 使JS编码更加规范化的模式,消除Javascript语法的一些不合理、不严谨之处，减少一些怪异行为。
+	 默认支持的糟糕特性都会被禁用，比如不能用with，也不能在意外的情况下给全局变量赋值;
+	 全局变量的显示声明,函数必须声明在顶层，不允许在非函数代码块内声明函数,arguments.callee也不允许使用；
+	 消除代码运行的一些不安全之处，保证代码运行的安全,限制函数中的arguments修改，严格模式下的eval函数的
+	 行为和非严格模式的也不相同;
+
+	 提高编译器效率，增加运行速度；
+	 为未来新版本的Javascript标准化做铺垫	
+	 
+21.如何判断一个对象是否属于某个类？
+    使用instanceof （待完善）
+    if(a instanceof Person){
+        alert('yes');
+    }	
+    
+22.new操作符具体干了什么呢?
+      1、创建一个空对象，并且 this 变量引用该对象，同时还继承了该函数的原型。
+      2、属性和方法被加入到 this 引用的对象中。
+      3、新创建的对象由 this 所引用，并且最后隐式的返回 this 。
+	  var obj  = {};
+	  obj.__proto__ = Base.prototype;
+	  Base.call(obj);	
+	  
+23.Javascript中，有一个函数，执行时对象查找时，永远不会去查找原型，这个函数是？
+	hasOwnProperty
+	javaScript中hasOwnProperty函数方法是返回一个布尔值，指出一个对象是否具有指定名称的属性。
+	此方法无法检查该对象的原型链中是否具有该属性；该属性必须是对象本身的一个成员。
+	
+24.JSON 的了解？
+	 JSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。
+	 它是基于JavaScript的一个子集。数据格式简单, 易于读写, 占用带宽小
+	 如：{"age":"12", "name":"back"}	
+	 
+25.	js延迟加载的方式有哪些？
+	defer和async、动态创建DOM方式（用得最多）、按需异步载入js
+	
+26.Ajax 是什么? 如何创建一个Ajax？
+	 ajax的全称：Asynchronous Javascript And XML。
+	 异步传输+js+xml。
+	 所谓异步，在这里简单地解释就是：向服务器发送请求的时候，我们不必等待结果，而是可以同时做其他的事情，等到有了结果它自己会根据设定进行后续操作，与此同时，页面是不会发生整页刷新的，提高了用户体验。
+
+	 (1)创建XMLHttpRequest对象,也就是创建一个异步调用对象
+	 (2)创建一个新的HTTP请求,并指定该HTTP请求的方法、URL及验证信息
+	 (3)设置响应HTTP请求状态变化的函数
+	 (4)发送HTTP请求
+	 (5)获取异步调用返回的数据
+	 (6)使用JavaScript和DOM实现局部刷新	
+	 
+27.	同步和异步的区别?
+	同步的概念应该是来自于OS中关于同步的概念:不同进程为协同完成某项工作而在先后次序上调整(通过阻塞,唤醒等方式).
+	同步强调的是顺序性.谁先谁后.异步则不存在这种顺序性.
+
+	同步：浏览器访问服务器请求，用户看得到页面刷新，重新发请求,等请求完，页面刷新，新内容出现，用户看到新内容,进行下一步操作。
+
+	异步：浏览器访问服务器请求，用户正常操作，浏览器后端进行请求。等请求完，页面不刷新，新内容也会出现，用户看到新内容。
+	
+28.模块化开发怎么做？
+	立即执行函数,不暴露私有成员
+     var module1 = (function(){
+     　　　　var _count = 0;
+     　　　　var m1 = function(){
+     　　　　　　//...
+     　　　　};
+     　　　　var m2 = function(){
+     　　　　　　//...
+     　　　　};
+     　　　　return {
+     　　　　　　m1 : m1,
+     　　　　　　m2 : m2
+     　　　　};
+     　　})();	
+     
+21.AMD/CMD区别：
+	AMD，异步模块定义，所有的模块将被异步加载，模块加载不影响后面语句运行。所有依赖某些模块的语句均放置在回调函数中。
+	区别：
+     1. 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
+     2. CMD 推崇依赖就近，AMD 推崇依赖前置。
+     
+22.异步加载JS的方式有哪些？
+   (1) defer，只支持IE
+   (2) async：
+   (3) 创建script，插入到DOM中，加载完毕后callBack
+   
+23.documen.write和 innerHTML的区别
+  document.write只能重绘整个页面
+  innerHTML可以重绘页面的一部分
+  
+24.DOM操作——怎样添加、移除、移动、复制、创建和查找节点?
+  （1）创建新节点
+    createDocumentFragment()    //创建一个DOM片段
+    createElement()   //创建一个具体的元素
+    createTextNode()   //创建一个文本节点
+  （2）添加、移除、替换、插入
+    appendChild()
+    removeChild()
+    replaceChild()
+    insertBefore() //在已有的子节点前插入一个新的子节点
+  （3）查找
+    getElementsByTagName()    //通过标签名称
+    getElementsByName()    //通过元素的Name属性的值(IE容错能力较强，会得到一个数组，其中包括id等于name值的)
+    getElementById()    //通过元素Id，唯一性
+    
+25. .call() 和 .apply() 的区别？
+	apply()方法 接收两个参数，一个是函数运行的作用域（this），另一个是参数数组。
+	语法：apply([thisObj [,argArray] ]);调用一个对象的一个方法，2另一个对象替换当前对象
+	call([thisObject[,arg1 [,arg2 [,...,argn]]]]);，应用某一对象的一个方法，用另一个对象替换当前对象
+      例子中用 add 来替换 sub，add.call(sub,3,1) == add(3,1) ，所以运行结果为：alert(4);
+	
+      注意：js 中的函数其实是对象，函数名是对 Function 对象的引用。
+
+        function add(a,b)
+        {
+            alert(a+b);
+        }
+
+        function sub(a,b)
+        {
+            alert(a-b);
+        }
+
+        add.call(sub,3,1);	
+        
+26.什么叫优雅降级和渐进增强
+	渐进增强 progressive enhancement： 针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。
+	优雅降级 graceful degradation： 一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。
+	区别：
+	a. 优雅降级是从复杂的现状开始，并试图减少用户体验的供给 
+	b. 渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要 
+	c. 降级（功能衰减）意味着往回看；而渐进增强则意味着朝前看，同时保证其根基处于安全地带
+	
+27.如何消除一个数组里重复的元素
+	// 方法一：
+	var arr1 =[1,2,2,2,3,3,3,4,5,6];
+	var	arr2 = [];
+	for(var i = 0,len = arr1.length; i < len; i++){
+		if(arr2.indexOf(arr1[i]) < 0){
+			arr2.push(arr1[i]);
+		}
+	}
+	document.write(arr2); // 1,2,3,4,5,6
+	
+28.在JavaScript中什么是伪数组？如何将伪数组转化为标准数组
+	能通过Array.prototype.slice转换为真正的数组的带有length属性的对象。
+	arguments对象，getElementsByTagName等等，都返回NodeList对象，属于伪数组
+	function realArray(c) {
+		try {
+			return Array.prototype.slice.call(c);
+		} catch (e) {
+			var ret = [], i = 0, len = c.length;
+			for (; i < len; i++) {
+				ret[i] = (c[i]);
+			}
+			return ret;
+		}
+	}
+	
+29.手写数组快速排序
+	var quickSort = function(arr) {
+	　　if (arr.length <= 1) { return arr; }
+	　　var pivotIndex = Math.floor(arr.length / 2);
+	　　var pivot = arr.splice(pivotIndex, 1)[0];
+	　　var left = [];
+	　　var right = [];
+	　　for (var i = 0; i < arr.length; i++){
+	　　　　if (arr[i] < pivot) {
+	　　　　　　left.push(arr[i]);
+	　　　　} else {
+	　　　　　　right.push(arr[i]);
+	　　　　}
+	　　}
+	　　return quickSort(left).concat([pivot], quickSort(right));
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
