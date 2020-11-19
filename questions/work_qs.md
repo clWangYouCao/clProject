@@ -125,6 +125,172 @@ export default store => {
     })
 }
 ```
+ 
+#### (5) 自定义指令    
+说明：除了默认内置的指令(v-model 和 v-show)，Vue也允许注册自定义指令。在Vue2.0中，代码复用和抽象的主要形式是组件。`然而，有些情况下，你仍需对普通DOM元素进行底层操作`，这个时候就会用到自定义指令。
+
+一个指令定义对象可提供如下几个钩子函数（均为可选）：
+1. bind: `只调用一次，指令第一次绑定到元素时使用`
+2. inserted: `被绑定元素插入父节点时调用（仅保证父节点存在，但不一定已被插入文档中）`
+3. updated: `所在组件的 VNode 更新时调用，但是可能发生在其子 VNode 更新之前`
+4. componentUpdated: `指令所在组件的 VNode 及其子 VNode 全部更新后调用`
+5. unbind: `只调用一次，指令与元素解绑时调用`
+
+钩子函数参数(el, binding, vnode, oldVnode)
+
+```
+<!-- v-focus -->
+<input v-focus/>
+
+<!-- 注册局部自定义指令 -->
+directives: {
+    focus: {
+        inserted: function(el) {
+            el.focus()
+        }
+    }
+}
+
+<!-- 按钮权限控制 -->
+<div class="toolbar" v-permission="'admin'"></div>
+
+const role = "user"
+Vue.directive('permission', {
+    inserted(el, binding) {
+        if(role == "user") {
+            el.parentElement.removeChild(el)
+        }
+    }
+})
+```
+
+#### (6) 渲染函数 render
+使用场景：使用javascript写html。
+基本结构：
+```
+render: function(createElement) {
+    <!-- 返回的是vNode -->
+    // 简单
+    return createElement(
+        tag,  // 标签名称
+        data,  // 传递数据
+        children // 子节点数组
+    )
+    //复杂
+    createElement(
+        // { String | Object | Function }  一个 HTML 标签名、组件选项对象，或者resolve 了上述任何一种的一个 async 函数。必填项
+        'div',
+        // { Object } 一个与模板中属性对应的数据对象。可选
+        {},
+        // { String |  Array } 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，也可以使用字符串来生成“文本虚拟节点”。可选
+        [
+            '先写一些文字',
+            createElement('h1', '一则头条'),
+            createElement(MyComponent, {
+                props: {
+                    someProp: 'foobar'
+                }
+            })
+        ]
+    )
+}
+```
+
+示例：处理title、icon
+
+```
+Vue.component('heading', {
+    props: ['level', 'title', 'icon'],
+    render(h) {
+        let children = []
+        // 添加图标功能
+        // <svg><use xlink:href="#icon-xxx"></use></svg>
+        if(this.icon) {
+            children.push(h(
+                'svg',
+                { class: 'icon' },
+                [h('use', { attrs: { 'xlink:href': '#icon-' + this.icon } })]
+            ))
+            children = children.concat(this.$slots.default) // 子节点数组
+        }
+        vnode = h(
+            'h' + level,
+            { attrs: { this.title } },
+            children
+        )
+        return vnode
+    }
+})
+```
+
+#### (7) 函数式组件
+定义：`组件没有管理任何状态，也没有监听任何传递给它的状态，也没有生命周期方法`。可将组件标记为functional，这意味着它无状态（没有响应式数据），也没有实例（没有this上下文）。
+
+```
+Vue.component('heading', {
+    functional: true,
+    props: ['level', 'title', 'icon'],
+    render(h, context) { // 上下文传参
+        let children = []
+        // 添加图标功能
+        // <svg><use xlink:href="#icon-xxx"></use></svg>
+        // 属性获取
+        const {icon, title, level} = context.props
+        if(icon) {
+            children.push(h(
+                'svg',
+                { class: 'icon' },
+                [h('use', { attrs: { 'xlink:href': '#icon-' + icon } })]
+            ))
+            children = children.concat(context.children)
+        }
+        vnode = h(
+            'h' + level,
+            { attrs: { title } },
+            children
+        )
+        return vnode
+    }
+})
+```
+
+#### (8) 插件
+作用：通常用来为Vue添加全局功能。
+1. 添加全局方法或者 property
+2. 添加全局资源：指令/过滤器/过渡等。
+3. 通过全局混入来添加一些组件选项。如 vue-router
+4. 添加 Vue 实例方法，通过把它们添加到 Vue.prototype 上实现。
+5. 一个库，提供自己的 API，同时提供上面提到的一个或多个功能。如 vue-router
+
+使用：`Vue.js 的插件应该暴露一个 install 方法。这个方法的第一个参数是 Vue 构造器，第二个参数是一个可选的选项对象`
+
+```
+MyPlugin.install = function(Vue, options) {
+    Vue.myGlobalMethod = function() {
+
+    } // 1
+
+    Vue.directive('my-directive', {
+        bind(el, binding, vnode, oldvnode) {
+
+        }
+    }) // 2
+
+    Vue.mixin({
+        created: function() {
+
+        },
+        ...
+    }) // 3
+
+    Vue.prototype.$myMethod = function(methodOptions) {
+
+    } // 4
+}
+
+// 使用
+Vue.use(MyPlugin)
+```
 
 ### 2. css   
 
